@@ -61,6 +61,13 @@ mobile-app (`apps/mobile-app/.env`):
 
 Never commit `.env` files or real secrets.
 
+## Deployment (Vercel)
+
+- Project `skywash` in Vercel team `posmo`, root directory `apps/admin-web`, production URL https://skywash-ivory.vercel.app.
+- Not linked to GitHub yet, so deploy from the repo root with the CLI: `VERCEL_ORG_ID=team_Xd2V5hqwwf0JHA0BnjDdBh3V VERCEL_PROJECT_ID=prj_SUZre4yVVPMn75WJryrqpIY87sbC npx vercel deploy --prod` (needs `VERCEL_TOKEN`). `.vercelignore` keeps build output and `node_modules` out of the upload.
+- Cloud sessions can't reach `db.prisma.io` or `*.vercel.app` (network policy). Use the Vercel API (`api.vercel.com`) for build logs and settings.
+- The `VERCEL_TOKEN` also has access to the unrelated Posmo projects in that team. Never touch them.
+
 ## API contract
 
 | Method & path | Auth | Purpose |
@@ -105,7 +112,8 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - [x] Monorepo scaffold (npm workspaces), design files placed per app
 - [x] Prisma schema + initial migration (`20261018000000_init`), seed script
 - [x] API routes, admin auth, CORS
-- [ ] Database: Prisma Postgres connected (env `DATABASE_POSTGRES_URL`), `ADMIN_PASSWORD` set on Vercel. Tables get created by the next Vercel deploy (`vercel-build`). Not yet verified. Cloud sessions can't reach `db.prisma.io` (network policy), so test against the deployed site. Demo seed (`npm run db:seed`) only from a machine that can reach the DB — skip it for production.
+- [x] Database: Prisma Postgres; migration `20261018000000_init` applied (confirmed in the Vercel build log)
+- [ ] Vercel: project `skywash` (team `posmo`, id `prj_SUZre4yVVPMn75WJryrqpIY87sbC`), production URL https://skywash-ivory.vercel.app, `DATABASE_URL` set. Still to do: add `ADMIN_PASSWORD` on Vercel and redeploy; connect the GitHub repo (Vercel's GitHub app has no access to `SJKings/Skywash-` yet, so deploys are CLI uploads); turn off Vercel Authentication for production before the mobile app goes live (currently `all_except_custom_domains`)
 - [x] Admin dashboard UI (login + bookings table/detail) from `Skywash Dashboard.dc.html`
 - [ ] Mobile screens (Expo Router) from `Skywash App.dc.html`
 - [ ] Realtime updates (dashboard + "My booking"), rate limiting on public endpoints
