@@ -80,7 +80,7 @@ Never commit `.env` files or real secrets.
 
 - Owner's Vercel team `sjkings-projects` (`team_m5bFNtahlMarAzpYMemIr9zG`), reachable from sessions through the **Vercel MCP** (not the `VERCEL_TOKEN`). Two projects, both building from the GitHub repo:
   - `skywash--admin-web` (root `apps/admin-web`) → https://skywash-admin-web.vercel.app. Production branch: `claude/intelligent-brown-xeisa4`.
-  - `skywash-website` (root `apps/website`) → https://skywash-ng.vercel.app. Its production branch is `main`, so pushes to the working branch only make previews: deploy production with the MCP's `create_deployment` (gitSource: repo, branch, sha; `target: "production"`). Dashboard "Redeploy" rebuilds the **same old commit**, not the latest.
+  - `skywash-website` (root `apps/website`) → https://skywash-ng.vercel.app. Its production branch is `main`: pushes to the working branch only make previews. The owner asked (2026-10-18) for `main` to follow the working branch, so after pushing, fast-forward it (`git push origin HEAD:main`; never force) and the website deploys itself. Without that, the MCP's `create_deployment` (gitSource: repo, branch, sha; `target: "production"`) deploys a specific commit. Dashboard "Redeploy" rebuilds the **same old commit**, not the latest.
   - Both have Standard Protection (Vercel Authentication on preview URLs only); production domains are public.
 - The admin project needs `ADMIN_PASSWORD` and the database URL (`DATABASE_URL` or `DATABASE_POSTGRES_URL`); `vercel-build` applies migrations on each deploy. `.vercelignore` keeps build output and `node_modules` out of CLI uploads.
 - A second project, `skywash` in the `posmo` team, was created by mistake and deleted on 2026-10-18. Don't recreate projects without asking.
