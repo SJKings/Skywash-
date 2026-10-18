@@ -57,6 +57,8 @@ jobs:
           fi
 
       - name: Build Android (${{ inputs.profile }})
+        env:
+          EAS_BUILD_NO_EXPO_GO_WARNING: "true"
         run: eas build --platform android --profile "${{ inputs.profile }}" --non-interactive --wait --json > build.json
 
       - name: Summary
@@ -65,9 +67,9 @@ jobs:
           [ -s build.json ] || exit 0
           node -e '
             const [b] = require("./build.json");
-            const page = `https://expo.dev/accounts/${b.project.ownerAccount.name}/projects/${b.project.slug}/builds/${b.id}`;
-            console.log(`### ${b.platform} ${b.buildProfile ?? ""} build: ${b.status}`);
-            console.log(`- Version ${b.appVersion} (${b.appBuildVersion})`);
-            console.log(`- Build page: ${page}`);
+            const { owner, slug } = require("./app.json").expo;
+            console.log(`### Android ${b.buildProfile ?? ""} build: ${b.status}`);
+            console.log(`- Version ${b.appVersion} (versionCode ${b.appBuildVersion})`);
+            console.log(`- Build page: https://expo.dev/accounts/${owner}/projects/${slug}/builds/${b.id}`);
             if (b.artifacts?.buildUrl) console.log(`- Download: ${b.artifacts.buildUrl}`);
           ' | tee -a "$GITHUB_STEP_SUMMARY"

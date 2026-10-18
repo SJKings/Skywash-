@@ -45,6 +45,12 @@
           "locationWhenInUsePermission": "Skywash uses your location to fill in the address where we should wash or pick up your car."
         }
       ]
-    ]
+    ],
+    "owner": "sjkings",
+    "extra": {
+      "eas": {
+        "projectId": "3efb0282-4d97-422e-b1d7-53cdaa798243"
+      }
+    }
   }
 }
