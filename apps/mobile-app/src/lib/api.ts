@@ -52,8 +52,11 @@ export class ApiError extends Error {
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000';
 
-/** Public privacy policy page on the website (required by Google Play to be linked in the app). */
-export const PRIVACY_POLICY_URL = `${API_URL}/privacy`;
+/** The public website (apps/website). Store builds set it in eas.json. */
+const WEBSITE_URL = process.env.EXPO_PUBLIC_WEBSITE_URL ?? API_URL;
+
+/** Privacy policy page on the public website (Google Play requires a link in the app). */
+export const PRIVACY_POLICY_URL = `${WEBSITE_URL}/privacy`;
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {

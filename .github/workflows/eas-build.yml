@@ -58,6 +58,18 @@ jobs:
             echo "Expo project linked: \`$LINK\`" >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      # The in-app privacy policy link must point at the public website.
+      - name: Check build settings
+        run: |
+          node -e '
+            const env = require("./eas.json").build["${{ inputs.profile }}"].env ?? {};
+            if (!/^https:\/\//.test(env.EXPO_PUBLIC_WEBSITE_URL ?? "")) {
+              console.error("::error::Set EXPO_PUBLIC_WEBSITE_URL (the public website, e.g. https://skywash.vercel.app) in apps/mobile-app/eas.json for the ${{ inputs.profile }} profile.");
+              process.exit(1);
+            }
+            console.log("Privacy policy link: " + env.EXPO_PUBLIC_WEBSITE_URL + "/privacy");
+          '
+
       - name: Build Android (${{ inputs.profile }})
         env:
           EAS_BUILD_NO_EXPO_GO_WARNING: "true"
