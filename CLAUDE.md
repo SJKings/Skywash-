@@ -14,8 +14,12 @@ skywash-/
 │   │   ├── prisma/         schema.prisma, migrations/, seed.ts
 │   │   ├── proxy.ts        Login redirect for pages + CORS for /api/* (Next 16 renamed middleware.ts → proxy.ts)
 │   │   └── design/         Ops dashboard prototype + design handoff (reference only)
-│   └── mobile-app/         Expo SDK 58 / React Native (TypeScript)
-│       ├── lib/api.ts      Typed client for the admin-web API
+│   └── mobile-app/         Expo SDK 58 / React Native (TypeScript), Expo Router
+│       ├── src/app/        Routes: (tabs)/index (Home), (tabs)/my-booking, service/[id],
+│       │                   book/{type,location,schedule,review}, confirmed
+│       ├── src/components/ Text (Archivo weights), ui (buttons, inputs, pills…), FlowScreen
+│       ├── src/lib/        api.ts (API client), catalog, booking-flow (step state), time, recent-codes
+│       ├── src/theme.ts    Colors and fonts from the handoff
 │       └── design/         Customer app prototype + design handoff (reference only)
 ├── CLAUDE.md
 └── README.md
@@ -31,14 +35,15 @@ npm workspaces; run everything from the repo root.
 | Admin web dev server (:3000) | `npm run dev:admin` |
 | Mobile dev server (Expo) | `npm run dev:mobile` |
 | Build admin web | `npm run build:admin` |
-| Lint (admin web) | `npm run lint` |
+| Lint (both apps) | `npm run lint` |
 | Typecheck both apps | `npm run typecheck` |
 | Regenerate Prisma client | `npm run db:generate` |
 | New migration after editing schema | `npm run db:migrate -- --name <change>` |
 | Apply migrations (prod / fresh DB) | `npm run db:deploy` — Vercel also runs this on every deploy via the `vercel-build` script |
 | Seed demo bookings (incl. `SW-4FQ2`) | `npm run db:seed` |
 | Prisma Studio | `npm run db:studio` |
-| Add a mobile dependency | `cd apps/mobile-app && npx expo install <pkg>` (never plain `npm i`) |
+| Add a mobile dependency | `cd apps/mobile-app && npx expo install <pkg>` (never plain `npm i`; in cloud sessions prefix `EXPO_OFFLINE=1`, Expo's servers are blocked) |
+| Mobile web build (for browser testing) | `cd apps/mobile-app && EXPO_PUBLIC_API_URL=http://localhost:3000 npx expo export -p web` → `dist/` |
 
 Before finishing a change: `npm run lint && npm run typecheck && npm run build:admin`.
 
@@ -92,7 +97,11 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - Times are stored as UTC instants and **displayed in `America/Los_Angeles`** (`BUSINESS_TIME_ZONE` in `lib/catalog.ts`, helpers in `lib/format.ts`). Never use the server's local time zone.
 - Dashboard styling: Tailwind v4 classes; `app/globals.css` pins the `sky`/`slate`/`green`/`red` steps the design uses to the handoff's exact hex values. Status pill colors and labels live in `STATUS_STYLES` (`lib/format.ts`).
 - The dashboard polls `GET /api/bookings?status=all` every 5 s while the tab is visible (stand-in until realtime). It only sees the 200 newest bookings, so stats and counts cover those.
-- `apps/mobile-app/lib/api.ts` mirrors the Prisma enums by hand — update it whenever the schema changes.
+- `apps/mobile-app/src/lib/api.ts` mirrors the Prisma enums by hand — update it whenever the schema changes.
+- Mobile catalog (`src/lib/catalog.ts`: packages, centers, fees, time slots) duplicates the server's prices for display. Change both together; the server's total is what gets saved.
+- Mobile times: `src/lib/time.ts` computes San Diego time with the US DST rules instead of `Intl` time zones (Hermes support varies). Bookings are sent as ISO with offset, e.g. `2026-10-19T09:30:00-07:00`. Past slots for today are disabled.
+- Mobile text: always use `components/Text` with `weight` (custom fonts need a family per weight on Android). Archivo loads in `src/app/_layout.tsx` behind the splash screen.
+- In cloud sessions docs.expo.dev is blocked: read the type definitions in `node_modules` instead. `expo-router` lives in `apps/mobile-app/node_modules`.
 - CORS only affects browser clients; the native app sends no `Origin`. Never enable `Access-Control-Allow-Credentials`.
 - Design references in each app's `design/` are prototypes (open the `.dc.html` in a browser with `support.js` beside it). Recreate them in real code; don't import them. Tokens: brand `#0EA5E9`, ink `#0F172A`, bg `#F5F8FB`, font Archivo, icons Lucide. Full spec in `design/HANDOFF.md`.
 
@@ -115,5 +124,6 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - [x] Database: Prisma Postgres; migration `20261018000000_init` applied (confirmed in the Vercel build log)
 - [ ] Vercel: project `skywash` (team `posmo`, id `prj_SUZre4yVVPMn75WJryrqpIY87sbC`), production URL https://skywash-ivory.vercel.app, `DATABASE_URL` set. Still to do: add `ADMIN_PASSWORD` on Vercel and redeploy; connect the GitHub repo (Vercel's GitHub app has no access to `SJKings/Skywash-` yet, so deploys are CLI uploads); turn off Vercel Authentication for production before the mobile app goes live (currently `all_except_custom_domains`)
 - [x] Admin dashboard UI (login + bookings table/detail) from `Skywash Dashboard.dc.html`
-- [ ] Mobile screens (Expo Router) from `Skywash App.dc.html`
+- [x] Mobile screens (Expo Router) from `Skywash App.dc.html`: all screens, wired to the API; tested in a web build with the API mocked
+- [ ] Mobile: real photos and map (react-native-maps needs a Maps API key); the "20% off first wash" promo isn't applied anywhere; bell and filter buttons on Home are decorative; test on real devices
 - [ ] Realtime updates (dashboard + "My booking"), rate limiting on public endpoints

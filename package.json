@@ -8,7 +8,7 @@
     "dev:admin": "npm run dev -w admin-web",
     "dev:mobile": "npm run start -w mobile-app",
     "build:admin": "npm run build -w admin-web",
-    "lint": "npm run lint -w admin-web",
+    "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "db:generate": "npm run db:generate -w admin-web",
     "db:migrate": "npm run db:migrate -w admin-web",

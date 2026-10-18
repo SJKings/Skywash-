@@ -21,6 +21,24 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "skywash"
+    "scheme": "skywash",
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 120,
+          "backgroundColor": "#0EA5E9"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Skywash uses your location to fill in the address where we should wash or pick up your car."
+        }
+      ]
+    ]
   }
 }
