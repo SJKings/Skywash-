@@ -19,7 +19,6 @@ export const colors = {
   inputBg: '#F8FAFC',
   bg: '#F5F8FB',
   white: '#FFFFFF',
-  star: '#F59E0B',
   errorBg: '#FEF2F2',
   errorText: '#991B1B',
 } as const;

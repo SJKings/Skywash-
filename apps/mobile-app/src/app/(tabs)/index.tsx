@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Bell, ChevronDown, Clock, MapPin, Search, SlidersHorizontal, Star, Ticket } from 'lucide-react-native';
+import { Bell, ChevronDown, Clock, MapPin, Search, SlidersHorizontal, Ticket } from 'lucide-react-native';
 import { useState } from 'react';
 import { Linking, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -186,19 +186,11 @@ export default function HomeScreen() {
                 </View>
                 <View style={{ flex: 1, gap: 4 }}>
                   <Text weight={700}>{p.name}</Text>
-                  <View style={{ flexDirection: 'row', gap: 10 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                      <Star size={13} color={colors.star} fill={colors.star} />
-                      <Text size={13} color={colors.slate500}>
-                        {p.rating}
-                      </Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                      <Clock size={13} color={colors.slate500} />
-                      <Text size={13} color={colors.slate500}>
-                        {p.duration}
-                      </Text>
-                    </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <Clock size={13} color={colors.slate500} />
+                    <Text size={13} color={colors.slate500}>
+                      {p.duration}
+                    </Text>
                   </View>
                 </View>
                 <Text size={16} weight={700} color={colors.brandText} style={{ paddingRight: 6 }}>

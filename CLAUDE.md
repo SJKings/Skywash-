@@ -169,5 +169,6 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - [ ] Owner uploads the `.aab` in Play Console: privacy URL https://skywash-admin-web.vercel.app/privacy, App access note with reviewer code `SW-G72C`
 - [x] Website `apps/website` built from `Skywash Landing.dc.html` with real prices/centers/screens; privacy policy page copied there
 - [ ] Deploy the website (owner's Vercel account: import the repo, root directory `apps/website`), then point the privacy policy at it: admin `/privacy` redirects there, app `PRIVACY_POLICY_URL` uses it (next app build), Play Console field updated
-- [ ] Mobile: bell and filter buttons on Home are decorative; the package ratings/review counts (4.8 · 412 etc.) come from the design and aren't real; test on real devices
+- [x] Made-up package ratings/review counts from the design removed from the app (Home rows, service detail) and from the store/website screenshots. Don't add ratings back unless they come from real reviews
+- [ ] Mobile: bell and filter buttons on Home are decorative; test on real devices
 - [ ] Realtime updates (dashboard + "My booking"), rate limiting on public endpoints

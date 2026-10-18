@@ -1,5 +1,5 @@
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
-import { ArrowLeft, Check, Clock, MapPin, Share2, Star } from 'lucide-react-native';
+import { ArrowLeft, Check, Clock, MapPin, Share2 } from 'lucide-react-native';
 import { ScrollView, Share, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PACKAGE_ICONS, packageFromSlug } from '@/components/PackageIcon';
@@ -53,18 +53,10 @@ export default function ServiceDetailScreen() {
         </View>
 
         <View style={{ padding: GUTTER, gap: 18 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <View style={{ backgroundColor: colors.sky100, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6 }}>
-              <Text size={13} weight={600} color={colors.brandText}>
-                Car washing
-              </Text>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <Star size={13} color={colors.star} fill={colors.star} />
-              <Text size={13} color={colors.slate500}>
-                {pkg.rating} ({pkg.reviews} reviews)
-              </Text>
-            </View>
+          <View style={{ alignSelf: 'flex-start', backgroundColor: colors.sky100, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6 }}>
+            <Text size={13} weight={600} color={colors.brandText}>
+              Car washing
+            </Text>
           </View>
 
           <View style={{ gap: 6 }}>

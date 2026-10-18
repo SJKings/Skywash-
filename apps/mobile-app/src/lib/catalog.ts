@@ -9,8 +9,6 @@ export interface Package {
   short: string;
   price: number;
   duration: string;
-  rating: string;
-  reviews: string;
   description: string;
   included: string[];
 }
@@ -22,8 +20,6 @@ export const PACKAGES: Package[] = [
     short: 'Exterior',
     price: 5_000,
     duration: '45 min',
-    rating: '4.8',
-    reviews: '412',
     description: 'A full hand wash for the outside of your car, finished with a streak-free dry.',
     included: [
       'Foam pre-wash and hand wash',
@@ -38,8 +34,6 @@ export const PACKAGES: Package[] = [
     short: 'Interior',
     price: 7_000,
     duration: '1 hr',
-    rating: '4.7',
-    reviews: '286',
     description: 'Vacuum, wipe-down and glass clean for the whole cabin, boot included.',
     included: [
       'Vacuum seats, mats and boot',
@@ -54,8 +48,6 @@ export const PACKAGES: Package[] = [
     short: 'Full detail',
     price: 25_000,
     duration: '2.5 hrs',
-    rating: '4.9',
-    reviews: '365',
     description: 'Our complete inside-and-out treatment with clay bar and a hand-applied wax.',
     included: [
       'Everything in Exterior and Interior',
@@ -70,8 +62,6 @@ export const PACKAGES: Package[] = [
     short: 'Engine bay',
     price: 10_000,
     duration: '40 min',
-    rating: '4.6',
-    reviews: '98',
     description: 'Safe degrease and dress of the engine bay, with sensitive parts covered.',
     included: [
       'Electrical parts covered',
