@@ -1,0 +1,73 @@
+# Read-only health check of the deployed API (writes nothing).
+# Run it from the Actions tab ("API check" → Run workflow).
+name: API check
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Deployed admin-web URL
+        default: https://skywash-admin-web.vercel.app
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check endpoints
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+        run: |
+          node --input-type=module <<'EOF' | tee -a "$GITHUB_STEP_SUMMARY"
+          const base = process.env.BASE_URL.replace(/\/$/, "");
+          const results = [];
+          let failed = false;
+
+          async function check(name, path, expect) {
+            let res, body = "";
+            try {
+              res = await fetch(base + path, { redirect: "manual" });
+              body = await res.text();
+            } catch (e) {
+              results.push(`| ${name} | \`${path}\` | ❌ request failed: ${e.message} |`);
+              failed = true;
+              return;
+            }
+            const json = (() => { try { return JSON.parse(body); } catch { return null; } })();
+            const verdict = expect(res, json, body);
+            if (verdict.startsWith("❌")) failed = true;
+            results.push(`| ${name} | \`${path}\` → ${res.status} | ${verdict} |`);
+          }
+
+          const vercelAuth = (res, body) =>
+            res.status === 401 && !body.trim().startsWith("{") ? "❌ blocked by Vercel Authentication (turn it off for production)" : null;
+
+          await check("Site responds", "/login", (res, json, body) =>
+            vercelAuth(res, body) ?? (res.status === 200 ? "✅ login page served" : `❌ unexpected status`));
+
+          await check("Database reachable", "/api/bookings/SW-2222", (res, json, body) =>
+            vercelAuth(res, body) ??
+            (res.status === 404 && json?.error === "Booking not found" ? "✅ lookup ran against the database (no such code)"
+              : res.status === 200 ? "✅ lookup ran against the database"
+              : res.status >= 500 ? "❌ server error — check DATABASE_URL / DATABASE_POSTGRES_URL on Vercel"
+              : "❌ unexpected response — is this the Skywash API?"));
+
+          await check("Admin list protected", "/api/bookings", (res, json, body) =>
+            vercelAuth(res, body) ??
+            (res.status === 401 && json?.error === "Unauthorized" ? "✅ refuses requests without the admin password" : "❌ expected 401"));
+
+          await check("Demo booking SW-4FQ2", "/api/bookings/SW-4FQ2", (res, json, body) =>
+            vercelAuth(res, body) ??
+            (res.status === 200 ? `✅ found (status ${json?.booking?.status})`
+              : res.status === 404 ? "ℹ️ not in the database (seed not run — fine for production)"
+              : "❌ unexpected response"));
+
+          console.log(`### API check: ${base}\n`);
+          console.log("| Check | Request | Result |\n|---|---|---|");
+          console.log(results.join("\n"));
+          process.exitCode = failed ? 1 : 0;
+          EOF
