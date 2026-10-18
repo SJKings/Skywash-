@@ -10,7 +10,8 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://skywash-admin-web.vercel.app"
+        "EXPO_PUBLIC_API_URL": "https://skywash-admin-web.vercel.app",
+        "EXPO_PUBLIC_WEBSITE_URL": "https://skywash-ng.vercel.app"
       }
     },
     "production": {
@@ -19,7 +20,8 @@
         "buildType": "app-bundle"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://skywash-admin-web.vercel.app"
+        "EXPO_PUBLIC_API_URL": "https://skywash-admin-web.vercel.app",
+        "EXPO_PUBLIC_WEBSITE_URL": "https://skywash-ng.vercel.app"
       }
     }
   },

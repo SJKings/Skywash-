@@ -78,10 +78,14 @@ Never commit `.env` files or real secrets.
 
 ## Deployment (Vercel)
 
-- The live project is the owner's `skywash-admin-web` (https://skywash-admin-web.vercel.app), in a Vercel account the session's `VERCEL_TOKEN` can't see. It needs `ADMIN_PASSWORD` and the database URL (`DATABASE_URL` or `DATABASE_POSTGRES_URL`); `vercel-build` applies migrations on each deploy. `.vercelignore` keeps build output and `node_modules` out of CLI uploads.
+- Owner's Vercel team `sjkings-projects` (`team_m5bFNtahlMarAzpYMemIr9zG`), reachable from sessions through the **Vercel MCP** (not the `VERCEL_TOKEN`). Two projects, both building from the GitHub repo:
+  - `skywash--admin-web` (root `apps/admin-web`) → https://skywash-admin-web.vercel.app. Production branch: `claude/intelligent-brown-xeisa4`.
+  - `skywash-website` (root `apps/website`) → https://skywash-ng.vercel.app. Its production branch is `main`, so pushes to the working branch only make previews: deploy production with the MCP's `create_deployment` (gitSource: repo, branch, sha; `target: "production"`). Dashboard "Redeploy" rebuilds the **same old commit**, not the latest.
+  - Both have Standard Protection (Vercel Authentication on preview URLs only); production domains are public.
+- The admin project needs `ADMIN_PASSWORD` and the database URL (`DATABASE_URL` or `DATABASE_POSTGRES_URL`); `vercel-build` applies migrations on each deploy. `.vercelignore` keeps build output and `node_modules` out of CLI uploads.
 - A second project, `skywash` in the `posmo` team, was created by mistake and deleted on 2026-10-18. Don't recreate projects without asking.
 - Cloud sessions can't reach `db.prisma.io` or `*.vercel.app` (network policy).
-- The `VERCEL_TOKEN` in cloud sessions only sees the unrelated Posmo team projects. Never touch them.
+- The `VERCEL_TOKEN` in cloud sessions only sees the unrelated Posmo team projects. Never touch them, nor the owner's other projects (`beaut`, `posmo`…).
 
 ## Mobile builds (EAS)
 
@@ -115,7 +119,7 @@ Cloud sessions can't reach the live site, the database or Expo, but GitHub's run
 | `POST /api/auth/session` | — | `{ password }` → sets `skywash_admin` HttpOnly cookie (12 h). |
 | `DELETE /api/auth/session` | — | Sign out. |
 
-Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <ADMIN_PASSWORD>` (scripts). Cookie-authenticated writes must come from the same origin (CSRF guard in `lib/auth.ts`). `proxy.ts` redirects pages to `/login` without a valid cookie (and `/login` → `/` with one), except public pages in `PUBLIC_PAGES` (`/privacy`); API routes still check auth themselves.
+Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <ADMIN_PASSWORD>` (scripts). Cookie-authenticated writes must come from the same origin (CSRF guard in `lib/auth.ts`). `proxy.ts` redirects pages to `/login` without a valid cookie (and `/login` → `/` with one); API routes still check auth themselves. Admin `/privacy` is a permanent redirect in `next.config.ts` to the website's `/privacy` (config redirects run before `proxy.ts`, so no login).
 
 ## Setup rules & decisions
 
@@ -164,12 +168,12 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - [x] Mobile build config: `com.skywash.app`, `eas.json` (production `.aab`, preview `.apk`), production API URL
 - [x] Google Play reviewer booking: **`SW-G72C`** ("Google Play review", plate `REVIEW`, drive-in Skywash Lekki, Confirmed, dated 2026-11-16, Lagos time). Replaced `SW-ZHPC` (San Diego center; cancelled). Staff must not cancel or complete it while the app is in review. Before 2026-11-16 passes (or if review drags on), run `create-booking.yml` with `replace_code: SW-G72C` and update the Play Console note. Reviewers' own test bookings will also show up in the dashboard; cancel those.
 - [x] First EAS production build: `.aab` 1.0.0 (versionCode 2), 2026-10-18 — https://expo.dev/accounts/sjkings/projects/skywash/builds/fe98c076-2fc2-474c-a650-98a2f10e6666
-- [x] Privacy policy: public page `/privacy` (https://skywash-admin-web.vercel.app/privacy) for business "Skywash", Lagos, Nigeria (Nigeria Data Protection Act 2023, cross-border transfer disclosure), contact skywashservice@gmail.com; linked from the bottom of the app's Home screen (`PRIVACY_POLICY_URL` in `src/lib/api.ts`). Keep it in sync if data collection changes (e.g. adding analytics or payments)
+- [x] Privacy policy: public page on the website, https://skywash-ng.vercel.app/privacy (admin `/privacy` redirects there, for app 1.0.0 and old links), for business "Skywash", Lagos, Nigeria (Nigeria Data Protection Act 2023, cross-border transfer disclosure), contact skywashservice@gmail.com; linked from the bottom of the app's Home screen (`PRIVACY_POLICY_URL` in `src/lib/api.ts`). Keep it in sync if data collection changes (e.g. adding analytics or payments)
 - [x] Lagos localisation (owner asked us to make up realistic values): centers Skywash Lekki (`lekki`, Lekki Phase 1), Skywash Ikeja (`ikeja`, Ikeja GRA), Skywash Victoria Island (`victoria-island`), area names only, no street addresses, all open 8am–7pm; time slots 08:00–15:30 (last start leaves room for a 2.5 hr Full Detail before closing); prices in whole Naira: Exterior ₦5,000, Interior ₦7,000, Engine Bay ₦10,000, Full Detail ₦25,000, home fee ₦3,000, pickup fee ₦5,000. Distances removed. Format money with `formatNaira` (both catalogs). Payment: cash, card or bank transfer on completion
 - [x] Release build for Google Play: `.aab` 1.0.0 (versionCode 4, Lagos/Naira/privacy link), 2026-10-18 — GitHub Release `android-v1.0.0-4`, Expo build `ac212cfd-11bd-4481-aaf6-4583f74ccfc2`. Live booking test passes with Naira pricing (`SW-XTMJ`, cancelled). versionCode 3 was an abandoned build; codes 2 and 3 must not be uploaded
-- [ ] Owner uploads the `.aab` in Play Console: privacy URL https://skywash-admin-web.vercel.app/privacy, App access note with reviewer code `SW-G72C`
+- [ ] Owner uploads the `.aab` in Play Console: privacy URL https://skywash-ng.vercel.app/privacy, App access note with reviewer code `SW-G72C`
 - [x] Website `apps/website` built from `Skywash Landing.dc.html` with real prices/centers/screens; privacy policy page copied there
-- [ ] Deploy the website (owner's Vercel account: import the repo, root directory `apps/website`), then point the privacy policy at it: admin `/privacy` redirects there, app `PRIVACY_POLICY_URL` uses it (next app build), Play Console field updated
+- [x] Website deployed (2026-10-18): Vercel project `skywash-website`, https://skywash-ng.vercel.app (`skywash-website.vercel.app` is taken by another account). Privacy policy moved there: admin `/privacy` redirects, `eas.json` sets `EXPO_PUBLIC_WEBSITE_URL`
 - [x] Made-up package ratings/review counts from the design removed from the app (Home rows, service detail) and from the store/website screenshots. Don't add ratings back unless they come from real reviews
 - [ ] Mobile: bell and filter buttons on Home are decorative; test on real devices
 - [ ] Realtime updates (dashboard + "My booking"), rate limiting on public endpoints

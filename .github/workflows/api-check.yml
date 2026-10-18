@@ -8,6 +8,9 @@ on:
       base_url:
         description: Deployed admin-web URL
         default: https://skywash-admin-web.vercel.app
+      website_url:
+        description: Deployed website URL
+        default: https://skywash-ng.vercel.app
 
 jobs:
   check:
@@ -21,16 +24,18 @@ jobs:
       - name: Check endpoints
         env:
           BASE_URL: ${{ inputs.base_url }}
+          WEBSITE_URL: ${{ inputs.website_url }}
         run: |
           node --input-type=module <<'EOF' | tee -a "$GITHUB_STEP_SUMMARY"
           const base = process.env.BASE_URL.replace(/\/$/, "");
+          const site = process.env.WEBSITE_URL.replace(/\/$/, "");
           const results = [];
           let failed = false;
 
           async function check(name, path, expect) {
             let res, body = "";
             try {
-              res = await fetch(base + path, { redirect: "manual" });
+              res = await fetch(path.startsWith("http") ? path : base + path, { redirect: "manual" });
               body = await res.text();
             } catch (e) {
               results.push(`| ${name} | \`${path}\` | ❌ request failed: ${e.message} |`);
@@ -49,11 +54,24 @@ jobs:
           await check("Site responds", "/login", (res, json, body) =>
             vercelAuth(res, body) ?? (res.status === 200 ? "✅ login page served" : `❌ unexpected status`));
 
-          await check("Privacy policy public", "/privacy", (res, json, body) =>
+          await check("Admin privacy link → website", "/privacy", (res, json, body) =>
             vercelAuth(res, body) ??
-            (res.status === 200 && body.includes("Privacy Policy") ? "✅ privacy policy served without login"
-              : res.status === 307 || res.status === 308 ? "❌ redirects to login — deploy the latest code"
-              : res.status === 404 ? "❌ not found — deploy the latest code"
+            (res.status === 308 && res.headers.get("location") === `${site}/privacy` ? "✅ redirects to the website's privacy policy"
+              : res.status === 200 ? "❌ still the old admin page — deploy the latest code"
+              : `❌ unexpected response (location: ${res.headers.get("location")})`));
+
+          await check("Website up", `${site}/`, (res, json, body) =>
+            vercelAuth(res, body) ?? (res.status === 200 && body.includes("Skywash") ? "✅ landing page served" : "❌ unexpected response"));
+
+          await check("Website privacy policy", `${site}/privacy`, (res, json, body) =>
+            vercelAuth(res, body) ??
+            (res.status === 200 && body.includes("Privacy Policy") && body.includes("skywashservice@gmail.com")
+              ? "✅ privacy policy served publicly" : "❌ unexpected response"));
+
+          await check("Website booking tracker", `${site}/api/bookings/SW-2222`, (res, json, body) =>
+            vercelAuth(res, body) ??
+            (res.status === 404 && json?.error ? "✅ reaches the API (unknown code → 404)"
+              : res.status === 200 && json?.booking ? "✅ reaches the API"
               : "❌ unexpected response"));
 
           await check("Database reachable", "/api/bookings/SW-2222", (res, json, body) =>
