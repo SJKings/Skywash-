@@ -1,7 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { hasAdminSession } from "@/lib/auth";
 
-// CORS for /api/*.
+// Two jobs:
+//   1. Dashboard pages: send visitors without an admin session to /login.
+//      (The API routes check auth themselves; this is only for page UX.)
+//   2. CORS for /api/*.
 //
+// CORS:
 // The native iOS/Android app is not subject to CORS (it sends no Origin header),
 // so this only matters for browser clients: Expo web during development and any
 // future web front end. Allowed origins come from CORS_ALLOWED_ORIGINS
@@ -26,6 +31,10 @@ const corsHeaders = {
 };
 
 export function proxy(request: NextRequest) {
+  if (!request.nextUrl.pathname.startsWith("/api/")) {
+    return guardPage(request);
+  }
+
   const origin = request.headers.get("origin");
   const isAllowedOrigin = origin !== null && allowedOrigins.has(origin);
 
@@ -46,6 +55,19 @@ export function proxy(request: NextRequest) {
   return response;
 }
 
+function guardPage(request: NextRequest) {
+  const signedIn = hasAdminSession(request);
+  const onLogin = request.nextUrl.pathname === "/login";
+  if (!signedIn && !onLogin) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+  if (signedIn && onLogin) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+  return NextResponse.next();
+}
+
 export const config = {
-  matcher: "/api/:path*",
+  // Everything except Next.js internals and static files in /public.
+  matcher: ["/api/:path*", "/((?!_next/|favicon.ico|.*\\.(?:svg|png|jpg|ico|webmanifest)$).*)"],
 };

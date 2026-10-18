@@ -28,3 +28,10 @@ export const CENTER_IDS = CENTERS.map((c) => c.id) as [CenterId, ...CenterId[]];
 export function bookingTotal(washType: WashType, serviceMode: ServiceMode) {
   return PACKAGES[washType].price + SERVICE_FEES[serviceMode];
 }
+
+/** All centers are in San Diego; appointment times are shown in this zone. */
+export const BUSINESS_TIME_ZONE = "America/Los_Angeles";
+
+export function centerName(centerId: string | null) {
+  return CENTERS.find((c) => c.id === centerId)?.name ?? "Unknown center";
+}

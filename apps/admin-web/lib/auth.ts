@@ -41,15 +41,20 @@ function isSameOrigin(request: NextRequest) {
   return origin === null || origin === request.nextUrl.origin;
 }
 
+/** True when the request carries a valid admin session cookie. */
+export function hasAdminSession(request: NextRequest) {
+  const cookie = request.cookies.get(ADMIN_COOKIE)?.value;
+  const token = adminSessionToken();
+  return Boolean(cookie && token && safeEqual(cookie, token));
+}
+
 export function isAdminRequest(request: NextRequest) {
   const authorization = request.headers.get("authorization");
   if (authorization?.startsWith("Bearer ")) {
     return isValidAdminPassword(authorization.slice("Bearer ".length));
   }
 
-  const cookie = request.cookies.get(ADMIN_COOKIE)?.value;
-  const token = adminSessionToken();
-  if (!cookie || !token || !safeEqual(cookie, token)) return false;
+  if (!hasAdminSession(request)) return false;
 
   // Cookie auth is only accepted from the dashboard itself (CSRF guard).
   return request.method === "GET" || isSameOrigin(request);
