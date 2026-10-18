@@ -115,12 +115,12 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - **Server is the source of truth** for prices, booking codes and status transitions — never trust totals or codes from the client. Prices/centers live in `apps/admin-web/lib/catalog.ts`.
 - Booking codes: `SW-` + 4 chars from `ABCDEFGHJKMNPQRSTUVWXYZ23456789` (no 0/O/1/I/L), unique, generated in `lib/booking-code.ts`.
 - Validation with zod in `lib/validation.ts`; route handlers return `{ error, issues? }` with 400/401/404/409.
-- Times are stored as UTC instants and **displayed in `America/Los_Angeles`** (`BUSINESS_TIME_ZONE` in `lib/catalog.ts`, helpers in `lib/format.ts`). Never use the server's local time zone.
+- **The business is in Lagos, Nigeria.** Times are stored as UTC instants and **displayed in `Africa/Lagos`** (WAT, UTC+1, no DST; `BUSINESS_TIME_ZONE` in `lib/catalog.ts`, helpers in `lib/format.ts`). Never use the server's local time zone.
 - Dashboard styling: Tailwind v4 classes; `app/globals.css` pins the `sky`/`slate`/`green`/`red` steps the design uses to the handoff's exact hex values. Status pill colors and labels live in `STATUS_STYLES` (`lib/format.ts`).
 - The dashboard polls `GET /api/bookings?status=all` every 5 s while the tab is visible (stand-in until realtime). It only sees the 200 newest bookings, so stats and counts cover those.
 - `apps/mobile-app/src/lib/api.ts` mirrors the Prisma enums by hand — update it whenever the schema changes.
 - Mobile catalog (`src/lib/catalog.ts`: packages, centers, fees, time slots) duplicates the server's prices for display. Change both together; the server's total is what gets saved.
-- Mobile times: `src/lib/time.ts` computes San Diego time with the US DST rules instead of `Intl` time zones (Hermes support varies). Bookings are sent as ISO with offset, e.g. `2026-10-19T09:30:00-07:00`. Past slots for today are disabled.
+- Mobile times: `src/lib/time.ts` computes Lagos time as a fixed UTC+1 instead of using `Intl` time zones (Hermes support varies). Bookings are sent as ISO with offset, e.g. `2026-10-19T09:30:00+01:00`. Past slots for today are disabled.
 - Mobile text: always use `components/Text` with `weight` (custom fonts need a family per weight on Android). Archivo loads in `src/app/_layout.tsx` behind the splash screen.
 - In cloud sessions docs.expo.dev is blocked: read the type definitions in `node_modules` instead. `expo-router` lives in `apps/mobile-app/node_modules`.
 - CORS only affects browser clients; the native app sends no `Origin`. Never enable `Access-Control-Allow-Credentials`.
@@ -153,7 +153,8 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - [x] Mobile build config: `com.skywash.app`, `eas.json` (production `.aab`, preview `.apk`), production API URL
 - [x] Google Play reviewer booking: **`SW-ZHPC`** ("Google Play review", plate `REVIEW`, drive-in Mission Bay, Confirmed, dated 2026-11-16). Staff must not cancel or complete it while the app is in review. Reviewers' own test bookings will also show up in the dashboard; cancel those.
 - [x] First EAS production build: `.aab` 1.0.0 (versionCode 2), 2026-10-18 — https://expo.dev/accounts/sjkings/projects/skywash/builds/fe98c076-2fc2-474c-a650-98a2f10e6666
-- [x] Privacy policy: public page `/privacy` (https://skywash-admin-web.vercel.app/privacy) for business "Skywash", contact skywashservice@gmail.com; linked from the bottom of the app's Home screen (`PRIVACY_POLICY_URL` in `src/lib/api.ts`). Keep it in sync if data collection changes (e.g. adding analytics or payments)
+- [x] Privacy policy: public page `/privacy` (https://skywash-admin-web.vercel.app/privacy) for business "Skywash", Lagos, Nigeria (Nigeria Data Protection Act 2023, cross-border transfer disclosure), contact skywashservice@gmail.com; linked from the bottom of the app's Home screen (`PRIVACY_POLICY_URL` in `src/lib/api.ts`). Keep it in sync if data collection changes (e.g. adding analytics or payments)
+- [ ] Lagos localisation still pending owner input: real center names/addresses/hours (catalog still has the design's San Diego centers, in both `apps/admin-web/lib/catalog.ts` and `apps/mobile-app/src/lib/catalog.ts`), prices and currency (still US$), seed data addresses. Reviewer booking `SW-ZHPC` uses center `mission-bay`; recreate it after centers change
 - [ ] Upload the `.aab` to Google Play (internal testing first), fill App access with reviewer code `SW-ZHPC`
 - [ ] Mobile: bell and filter buttons on Home are decorative; test on real devices
 - [ ] Realtime updates (dashboard + "My booking"), rate limiting on public endpoints

@@ -34,8 +34,8 @@ export default function PrivacyPolicyPage() {
           <p className="text-sm text-slate-500">Effective {EFFECTIVE}</p>
         </div>
         <p className="text-[15px] leading-relaxed text-slate-600">
-          Skywash (&ldquo;we&rdquo;, &ldquo;us&rdquo;) provides car wash services at our centers in San Diego, at
-          your home, or by collecting and returning your car. This policy explains what information the Skywash
+          Skywash (&ldquo;we&rdquo;, &ldquo;us&rdquo;) provides car wash services in Lagos, Nigeria: at our centers,
+          at your home, or by collecting and returning your car. This policy explains what information the Skywash
           mobile app and website collect, how we use it, and the choices you have.
         </p>
       </header>
@@ -98,6 +98,11 @@ export default function PrivacyPolicyPage() {
             that host our systems: Vercel (our website and app server) and Prisma (our database). They process it
             only on our behalf. We may also disclose information if the law requires it.
           </p>
+          <p>
+            These providers store data on servers that may be outside Nigeria. Where your information is
+            transferred abroad, we rely on providers that apply appropriate safeguards to protect it, as required
+            by the Nigeria Data Protection Act 2023.
+          </p>
         </Section>
 
         <Section title="How long we keep it">
@@ -125,9 +130,11 @@ export default function PrivacyPolicyPage() {
             and type your address instead.
           </p>
           <p>
-            California residents have the right to know what personal information we collect and how we use it,
-            to request its deletion, and not to be discriminated against for exercising these rights. We do not
-            sell or share personal information as defined by California law.
+            Under the Nigeria Data Protection Act 2023 you have the right to be informed about how we use your
+            information, to access it, to have it corrected or deleted, to object to or restrict its use, and to
+            receive a copy of it. We process your information to perform the service you book with us. If you
+            believe we have not handled your information properly, you can complain to the Nigeria Data
+            Protection Commission (NDPC), though we would appreciate the chance to resolve it with you first.
           </p>
         </Section>
 
@@ -148,7 +155,7 @@ export default function PrivacyPolicyPage() {
           <p>
             Skywash
             <br />
-            San Diego, California
+            Lagos, Nigeria
             <br />
             Email:{" "}
             <a className="font-semibold text-sky-700 hover:text-sky-500" href={`mailto:${CONTACT}`}>

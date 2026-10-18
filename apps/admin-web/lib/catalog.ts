@@ -29,8 +29,8 @@ export function bookingTotal(washType: WashType, serviceMode: ServiceMode) {
   return PACKAGES[washType].price + SERVICE_FEES[serviceMode];
 }
 
-/** All centers are in San Diego; appointment times are shown in this zone. */
-export const BUSINESS_TIME_ZONE = "America/Los_Angeles";
+/** All centers are in Lagos; appointment times are shown in this zone (WAT, UTC+1, no DST). */
+export const BUSINESS_TIME_ZONE = "Africa/Lagos";
 
 export function centerName(centerId: string | null) {
   return CENTERS.find((c) => c.id === centerId)?.name ?? "Unknown center";

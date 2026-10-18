@@ -11,7 +11,7 @@ const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: databaseUrl() }),
 });
 
-/** Today (or N days from now) at the given 24h time, San Diego time. */
+/** Today (or N days from now) at the given 24h time, Lagos time. */
 function at(daysFromNow: number, time: string) {
   return businessDateTime(shiftDayKey(businessDayKey(new Date()), daysFromNow), time);
 }

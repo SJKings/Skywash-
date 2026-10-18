@@ -21,7 +21,7 @@ export interface NewBooking {
   notes?: string;
   /** Required for DRIVE_IN: 'mission-bay' | 'north-park' | 'chula-vista'. */
   centerId?: string;
-  /** ISO 8601 with offset, e.g. '2026-10-20T09:30:00-07:00'. */
+  /** ISO 8601 with offset, e.g. '2026-10-20T09:30:00+01:00' (Lagos time). */
   bookingDate: string;
 }
 

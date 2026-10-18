@@ -2,7 +2,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
 import type { NewBooking, PublicBooking, ServiceMode, VehicleType, WashType } from './api';
 import { getPackage, SERVICE_FEES } from './catalog';
-import { addDays, pacificIso, todayKey } from './time';
+import { addDays, lagosIso, todayKey } from './time';
 
 export type Place = 'HOME' | 'CENTER';
 export type CenterTransport = 'PICKUP' | 'DRIVE_IN';
@@ -86,7 +86,7 @@ export function toNewBooking(d: BookingDraft): NewBooking {
     longitude: atCustomer ? d.longitude : undefined,
     notes: atCustomer && d.notes.trim() ? d.notes.trim() : undefined,
     centerId: atCustomer ? undefined : (d.centerId ?? undefined),
-    bookingDate: pacificIso(bookingDay(d), d.time!),
+    bookingDate: lagosIso(bookingDay(d), d.time!),
   };
 }
 

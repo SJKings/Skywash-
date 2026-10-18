@@ -14,7 +14,7 @@ export function businessDayKey(date: Date) {
 
 /** The instant of a wall-clock time ("09:30") on a business day ("2026-10-20"). */
 export function businessDateTime(dayKey: string, time: string) {
-  // Read the zone's UTC offset at roughly that moment, e.g. "GMT-07:00".
+  // Read the zone's UTC offset at roughly that moment, e.g. "GMT+01:00".
   const probe = new Date(`${dayKey}T${time}:00Z`);
   const offset =
     new Intl.DateTimeFormat("en-US", { timeZone: BUSINESS_TIME_ZONE, timeZoneName: "longOffset" })

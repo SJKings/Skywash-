@@ -52,7 +52,7 @@ export default function HomeScreen() {
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
               <MapPin size={17} color={colors.white} />
               <Text size={17} weight={600} color={colors.white}>
-                San Diego, CA
+                Lagos, Nigeria
               </Text>
               <ChevronDown size={14} color={colors.white} />
             </View>

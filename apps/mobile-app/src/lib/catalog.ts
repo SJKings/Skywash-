@@ -117,7 +117,7 @@ export const VEHICLES: { id: VehicleType; label: string }[] = [
   { id: 'TRUCK', label: 'Truck' },
 ];
 
-/** Bookable start times, San Diego time. */
+/** Bookable start times, Lagos time. */
 export const TIME_SLOTS = ['08:00', '09:30', '11:00', '12:30', '14:00', '15:30', '17:00'];
 
 /** How many days ahead customers can book (today + 5). */

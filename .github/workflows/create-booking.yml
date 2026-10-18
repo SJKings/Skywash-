@@ -52,9 +52,9 @@ jobs:
             return json;
           }
 
-          // Latest allowed date (the API accepts up to 30 days ahead), 10:00 San Diego time.
+          // Latest allowed date (the API accepts up to 30 days ahead), 10:00 Lagos time.
           const day = new Date(Date.now() + 29 * 24 * 3600 * 1000).toISOString().slice(0, 10);
-          const offset = new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", timeZoneName: "longOffset" })
+          const offset = new Intl.DateTimeFormat("en-US", { timeZone: "Africa/Lagos", timeZoneName: "longOffset" })
             .formatToParts(new Date(`${day}T18:00:00Z`)).find((p) => p.type === "timeZoneName").value.replace("GMT", "");
           const { booking } = await call("POST", "/api/bookings", {
             customerName: process.env.NAME,
@@ -74,6 +74,6 @@ jobs:
 
           console.log(`### Demo booking created: \`${booking.code}\`\n`);
           console.log(`- ${process.env.NAME} · plate ${process.env.PLATE} · Full Detail · drive-in at Skywash Mission Bay`);
-          console.log(`- Date: ${day} 10:00 AM (San Diego) · Status: ${process.env.STATUS}`);
+          console.log(`- Date: ${day} 10:00 AM (Lagos) · Status: ${process.env.STATUS}`);
           console.log(`- In the app: My booking → enter ${booking.code}`);
           EOF
