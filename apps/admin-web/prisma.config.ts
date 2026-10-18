@@ -1,8 +1,9 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
+import { databaseUrl } from "./lib/database-url";
 
-// The Prisma CLI (migrate, studio, seed) prefers the direct (unpooled) Neon
-// connection; the app itself uses DATABASE_URL through the Neon driver adapter.
+// Used by the Prisma CLI (migrate, studio, seed). DATABASE_URL_UNPOOLED is
+// preferred when a provider gives a separate direct connection.
 // `prisma generate` needs no database, so an unset URL is fine at build time.
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -11,6 +12,6 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    url: process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL,
+    url: process.env.DATABASE_URL_UNPOOLED || databaseUrl(),
   },
 });

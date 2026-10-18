@@ -1,11 +1,12 @@
-import { PrismaNeon } from "@prisma/adapter-neon";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { databaseUrl } from "@/lib/database-url";
 import { PrismaClient } from "@/lib/generated/prisma/client";
 
-// Connections open lazily on the first query, so a missing DATABASE_URL
+// Connections open lazily on the first query, so a missing connection string
 // surfaces as a query error rather than breaking `next build`.
 function createPrismaClient() {
   return new PrismaClient({
-    adapter: new PrismaNeon({ connectionString: process.env.DATABASE_URL }),
+    adapter: new PrismaPg({ connectionString: databaseUrl() }),
   });
 }
 

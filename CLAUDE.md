@@ -48,8 +48,8 @@ admin-web (`apps/admin-web/.env`, see `.env.example`; on Vercel: Project → Set
 
 | Key | Required | Purpose |
 |---|---|---|
-| `DATABASE_URL` | yes | Neon / Vercel Postgres **pooled** connection string. Used at runtime via `@prisma/adapter-neon`. |
-| `DATABASE_URL_UNPOOLED` | no | Direct connection, preferred by the Prisma CLI (`migrate`, `studio`, `seed`). Falls back to `DATABASE_URL`. Vercel's Neon integration sets it. |
+| `DATABASE_URL` | yes* | Postgres connection string (Prisma Postgres, `db.prisma.io`). Used at runtime via `@prisma/adapter-pg`. *If unset, `DATABASE_POSTGRES_URL` is used — the name Vercel's Prisma Postgres integration sets with the `DATABASE` prefix (resolved in `lib/database-url.ts`). |
+| `DATABASE_URL_UNPOOLED` | no | Separate direct connection for the Prisma CLI (`migrate`, `studio`, `seed`), if a provider gives one. Falls back to the above. |
 | `ADMIN_PASSWORD` | yes | Staff password for the dashboard and admin API. Unset → all admin requests are rejected. |
 | `CORS_ALLOWED_ORIGINS` | no | Comma-separated browser origins allowed to call `/api/*`. `http://localhost:8081` (Expo web) is allowed automatically outside production. |
 
@@ -77,7 +77,7 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 ## Setup rules & decisions
 
 - **Next.js 16 and Expo 58 differ from older docs.** Before writing Next code, read `node_modules/next/dist/docs/`; for Expo, the versioned docs at docs.expo.dev (see each app's `AGENTS.md`).
-- **Prisma 7**: `prisma.config.ts` holds the datasource URL (not `schema.prisma`); the client is generated to `apps/admin-web/lib/generated/prisma` (gitignored) and imported from `@/lib/generated/prisma/client`. The app connects through the Neon driver adapter (`lib/prisma.ts`).
+- **Prisma 7**: `prisma.config.ts` holds the datasource URL (not `schema.prisma`); the client is generated to `apps/admin-web/lib/generated/prisma` (gitignored) and imported from `@/lib/generated/prisma/client`. The app connects through the `pg` driver adapter (`lib/prisma.ts`) — plain TCP Postgres, so it works with Prisma Postgres or any other Postgres. (The Neon adapter was dropped: it only speaks Neon's protocol.)
 - Change the schema only via `prisma migrate dev` so every change has a committed migration in `prisma/migrations/`.
 - **Server is the source of truth** for prices, booking codes and status transitions — never trust totals or codes from the client. Prices/centers live in `apps/admin-web/lib/catalog.ts`.
 - Booking codes: `SW-` + 4 chars from `ABCDEFGHJKMNPQRSTUVWXYZ23456789` (no 0/O/1/I/L), unique, generated in `lib/booking-code.ts`.
@@ -105,7 +105,7 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - [x] Monorepo scaffold (npm workspaces), design files placed per app
 - [x] Prisma schema + initial migration (`20261018000000_init`), seed script
 - [x] API routes, admin auth, CORS
-- [ ] Connect Neon: set `DATABASE_URL`, run `npm run db:deploy && npm run db:seed`
+- [ ] Database: Prisma Postgres connected (env `DATABASE_POSTGRES_URL`); still to run `npm run db:deploy && npm run db:seed` — blocked from cloud sessions until `db.prisma.io` is an allowed domain
 - [x] Admin dashboard UI (login + bookings table/detail) from `Skywash Dashboard.dc.html`
 - [ ] Mobile screens (Expo Router) from `Skywash App.dc.html`
 - [ ] Realtime updates (dashboard + "My booking"), rate limiting on public endpoints

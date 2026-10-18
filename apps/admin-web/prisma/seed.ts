@@ -1,13 +1,14 @@
 // Demo data matching the design prototypes. Safe to re-run (upserts by code).
 // Run with: npm run db:seed
 import "dotenv/config";
-import { PrismaNeon } from "@prisma/adapter-neon";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { bookingTotal } from "../lib/catalog";
+import { databaseUrl } from "../lib/database-url";
 import { businessDateTime, businessDayKey, shiftDayKey } from "../lib/format";
 import { PrismaClient, type Prisma } from "../lib/generated/prisma/client";
 
 const prisma = new PrismaClient({
-  adapter: new PrismaNeon({ connectionString: process.env.DATABASE_URL! }),
+  adapter: new PrismaPg({ connectionString: databaseUrl() }),
 });
 
 /** Today (or N days from now) at the given 24h time, San Diego time. */

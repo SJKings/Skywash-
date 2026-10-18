@@ -5,7 +5,7 @@ Car wash booking service: customers book a wash from a mobile app (no sign-up, t
 | App | Stack | Path |
 |---|---|---|
 | Customer mobile app | React Native, Expo SDK 58, TypeScript | [`apps/mobile-app`](apps/mobile-app) |
-| Admin dashboard + API | Next.js 16 (App Router), Prisma 7, Neon Postgres | [`apps/admin-web`](apps/admin-web) |
+| Admin dashboard + API | Next.js 16 (App Router), Prisma 7, Prisma Postgres | [`apps/admin-web`](apps/admin-web) |
 
 ## Getting started
 
@@ -44,7 +44,7 @@ curl -H "Authorization: Bearer $ADMIN_PASSWORD" "http://localhost:3000/api/booki
 ## Deploying admin-web to Vercel
 
 1. Import the repo and set **Root Directory** to `apps/admin-web`.
-2. Add the Neon integration (Storage → Postgres) — it sets `DATABASE_URL` and `DATABASE_URL_UNPOOLED`.
+2. Connect Prisma Postgres (Storage → Prisma Postgres). It sets `DATABASE_POSTGRES_URL` (with the `DATABASE` prefix), which the app reads when `DATABASE_URL` is unset.
 3. Add `ADMIN_PASSWORD` (and `CORS_ALLOWED_ORIGINS` if a browser client needs it).
 4. Run `npm run db:deploy` against the production database once, and after each new migration.
 
