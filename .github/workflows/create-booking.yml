@@ -54,6 +54,8 @@ jobs:
 
           // Latest allowed date (the API accepts up to 30 days ahead), 10:00 San Diego time.
           const day = new Date(Date.now() + 29 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+          const offset = new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", timeZoneName: "longOffset" })
+            .formatToParts(new Date(`${day}T18:00:00Z`)).find((p) => p.type === "timeZoneName").value.replace("GMT", "");
           const { booking } = await call("POST", "/api/bookings", {
             customerName: process.env.NAME,
             phone: "(000) 000-0000",
@@ -62,7 +64,7 @@ jobs:
             washType: "FULL_DETAIL",
             serviceMode: "DRIVE_IN",
             centerId: "mission-bay",
-            bookingDate: `${day}T10:00:00-08:00`,
+            bookingDate: `${day}T10:00:00${offset}`,
           });
 
           const steps = { PENDING: [], APPROVED: ["APPROVED"], IN_PROGRESS: ["APPROVED", "IN_PROGRESS"] }[process.env.STATUS];
