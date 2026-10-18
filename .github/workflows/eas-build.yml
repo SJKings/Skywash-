@@ -1,0 +1,73 @@
+# Builds the mobile app on Expo's servers (EAS Build).
+# Run it from the Actions tab ("EAS build" → Run workflow). Needs the
+# EXPO_TOKEN repository secret. Manual only, so pushes don't use build credits.
+name: EAS build
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Build profile from apps/mobile-app/eas.json
+        type: choice
+        options:
+          - production # Android App Bundle (.aab) for Google Play
+          - preview # installable .apk for test phones
+        default: production
+
+concurrency:
+  group: eas-build-${{ inputs.profile }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: apps/mobile-app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Expo config plugins in app.json load from node_modules.
+      - name: Install dependencies
+        working-directory: .
+        run: npm ci
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      # The first build creates the Expo project. Commit the owner and
+      # extra.eas.projectId it adds to app.json so later builds reuse it.
+      - name: Link Expo project
+        run: |
+          if node -e "process.exit(require('./app.json').expo.extra?.eas?.projectId ? 0 : 1)"; then
+            echo "Already linked to an Expo project."
+          else
+            eas init --non-interactive --force
+            LINK=$(node -p "const e = require('./app.json').expo; JSON.stringify({ owner: e.owner, projectId: e.extra?.eas?.projectId })")
+            echo "::notice title=Expo project linked::Add to apps/mobile-app/app.json: $LINK"
+            echo "Expo project linked: \`$LINK\`" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Build Android (${{ inputs.profile }})
+        run: eas build --platform android --profile "${{ inputs.profile }}" --non-interactive --wait --json > build.json
+
+      - name: Summary
+        if: always()
+        run: |
+          [ -s build.json ] || exit 0
+          node -e '
+            const [b] = require("./build.json");
+            const page = `https://expo.dev/accounts/${b.project.ownerAccount.name}/projects/${b.project.slug}/builds/${b.id}`;
+            console.log(`### ${b.platform} ${b.buildProfile ?? ""} build: ${b.status}`);
+            console.log(`- Version ${b.appVersion} (${b.appBuildVersion})`);
+            console.log(`- Build page: ${page}`);
+            if (b.artifacts?.buildUrl) console.log(`- Download: ${b.artifacts.buildUrl}`);
+          ' | tee -a "$GITHUB_STEP_SUMMARY"
