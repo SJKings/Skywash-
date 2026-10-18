@@ -22,6 +22,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    outputs:
+      build_id: ${{ steps.result.outputs.build_id }}
     defaults:
       run:
         working-directory: apps/mobile-app
@@ -62,6 +64,7 @@ jobs:
         run: eas build --platform android --profile "${{ inputs.profile }}" --non-interactive --wait --json > build.json
 
       - name: Summary
+        id: result
         if: always()
         run: |
           [ -s build.json ] || exit 0
@@ -73,3 +76,15 @@ jobs:
             console.log(`- Build page: https://expo.dev/accounts/${owner}/projects/${slug}/builds/${b.id}`);
             if (b.artifacts?.buildUrl) console.log(`- Download: ${b.artifacts.buildUrl}`);
           ' | tee -a "$GITHUB_STEP_SUMMARY"
+          node -p "require(\"./build.json\")[0].id" | sed "s/^/build_id=/" >> "$GITHUB_OUTPUT"
+
+  # Copy the finished file to a GitHub Release for easy download.
+  publish:
+    needs: build
+    if: needs.build.outputs.build_id != ''
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-build.yml
+    with:
+      build_id: ${{ needs.build.outputs.build_id }}
+    secrets: inherit

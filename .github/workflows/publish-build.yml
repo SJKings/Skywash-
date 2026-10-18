@@ -1,0 +1,103 @@
+# Downloads a finished EAS Android build and attaches the file (.aab or .apk)
+# to a GitHub Release, so it can be downloaded from the repo's Releases page.
+# Runs automatically after "EAS build"; can also be run by hand.
+name: Publish build
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_id:
+        description: EAS build ID (leave blank for the latest finished Android build)
+        required: false
+        default: ""
+  workflow_call:
+    inputs:
+      build_id:
+        type: string
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/mobile-app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # The EAS CLI reads the app config, whose plugins load from node_modules.
+      - name: Install dependencies
+        working-directory: .
+        run: npm ci
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Find build
+        id: build
+        env:
+          BUILD_ID: ${{ inputs.build_id }}
+        run: |
+          if [ -n "$BUILD_ID" ]; then
+            eas build:view "$BUILD_ID" --json > build.json
+          else
+            eas build:list --platform android --status finished --limit 1 --json --non-interactive > build.json
+          fi
+          node -e '
+            const data = require("./build.json");
+            const b = Array.isArray(data) ? data[0] : data;
+            if (!b || b.status !== "FINISHED" || !b.artifacts?.buildUrl) {
+              console.error("No finished build with a downloadable file found.");
+              process.exit(1);
+            }
+            const ext = b.artifacts.buildUrl.split("?")[0].split(".").pop();
+            const out = {
+              url: b.artifacts.buildUrl,
+              version: b.appVersion,
+              code: b.appBuildVersion,
+              profile: b.buildProfile ?? "",
+              ext,
+              file: `skywash-${b.appVersion}-${b.appBuildVersion}.${ext}`,
+              tag: `android-v${b.appVersion}-${b.appBuildVersion}`,
+              id: b.id,
+            };
+            for (const [k, v] of Object.entries(out)) require("fs").appendFileSync(process.env.GITHUB_OUTPUT, `${k}=${v}\n`);
+          '
+
+      - name: Download from Expo
+        run: curl -fsSL -o "${{ steps.build.outputs.file }}" "${{ steps.build.outputs.url }}"
+
+      - name: Attach to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.build.outputs.tag }}
+          FILE: ${{ steps.build.outputs.file }}
+          VERSION: ${{ steps.build.outputs.version }}
+          CODE: ${{ steps.build.outputs.code }}
+          EXT: ${{ steps.build.outputs.ext }}
+        run: |
+          if [ "$EXT" = "aab" ]; then
+            NOTES="Android App Bundle for Google Play: version $VERSION (version code $CODE). Download $FILE below and upload it in Google Play Console."
+          else
+            NOTES="Android test build (.apk): version $VERSION (version code $CODE). Download $FILE on an Android phone to install it."
+          fi
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" "$FILE" --clobber
+          else
+            gh release create "$TAG" "$FILE" --title "Skywash Android $VERSION ($CODE)" --notes "$NOTES" --target "$GITHUB_SHA"
+          fi
+          URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${FILE}"
+          echo "### Download: [$FILE]($URL)" >> "$GITHUB_STEP_SUMMARY"
+          echo "Release page: https://github.com/${GITHUB_REPOSITORY}/releases/tag/${TAG}" >> "$GITHUB_STEP_SUMMARY"
