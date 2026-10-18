@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Bell, ChevronDown, Clock, MapPin, Search, SlidersHorizontal, Sparkles, Star, Ticket } from 'lucide-react-native';
+import { Bell, ChevronDown, Clock, MapPin, Search, SlidersHorizontal, Star, Ticket } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, ScrollView, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -131,47 +131,6 @@ export default function HomeScreen() {
                 Find
               </Text>
             </Tappable>
-          </View>
-        </View>
-
-        {/* Special for you */}
-        <View style={{ gap: 12 }}>
-          <Text size={19} weight={700}>
-            Special for you
-          </Text>
-          <View style={{ height: 160, borderRadius: 20, backgroundColor: colors.ink, overflow: 'hidden' }}>
-            <View style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '48%', backgroundColor: colors.slate800, alignItems: 'center', justifyContent: 'center', paddingBottom: 30 }}>
-              <Sparkles size={76} color={colors.brand} strokeWidth={1.5} />
-            </View>
-            <View style={{ flex: 1, padding: 16, justifyContent: 'space-between' }}>
-              <View style={{ alignSelf: 'flex-start', backgroundColor: colors.white, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 }}>
-                <Text size={11} weight={600}>
-                  Limited time
-                </Text>
-              </View>
-              <View style={{ gap: 2 }}>
-                <Text size={18} weight={700} color={colors.white}>
-                  First wash
-                </Text>
-                <Text size={40} weight={800} color={colors.white} style={{ lineHeight: 42 }}>
-                  20% off
-                </Text>
-              </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Text size={11} color={colors.slate400}>
-                  All services · Home or center
-                </Text>
-                <Tappable
-                  accessibilityRole="button"
-                  onPress={() => openPackage('FULL_DETAIL')}
-                  style={{ backgroundColor: colors.brand, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8 }}
-                >
-                  <Text size={13} weight={600} color={colors.white}>
-                    Claim
-                  </Text>
-                </Tappable>
-              </View>
-            </View>
           </View>
         </View>
 

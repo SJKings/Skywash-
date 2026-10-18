@@ -103,6 +103,7 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - Mobile text: always use `components/Text` with `weight` (custom fonts need a family per weight on Android). Archivo loads in `src/app/_layout.tsx` behind the splash screen.
 - In cloud sessions docs.expo.dev is blocked: read the type definitions in `node_modules` instead. `expo-router` lives in `apps/mobile-app/node_modules`.
 - CORS only affects browser clients; the native app sends no `Origin`. Never enable `Access-Control-Allow-Credentials`.
+- Logo: the sky-blue rounded tile with Lucide's `droplets` icon (`Droplets` in lucide-react / lucide-react-native) plus the "Skywash" wordmark, as in the dashboard header.
 - Design references in each app's `design/` are prototypes (open the `.dc.html` in a browser with `support.js` beside it). Recreate them in real code; don't import them. Tokens: brand `#0EA5E9`, ink `#0F172A`, bg `#F5F8FB`, font Archivo, icons Lucide. Full spec in `design/HANDOFF.md`.
 
 ### Schema vs. design naming
@@ -126,5 +127,7 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - [x] Admin dashboard UI (login + bookings table/detail) from `Skywash Dashboard.dc.html`
 - [x] Mobile screens (Expo Router) from `Skywash App.dc.html`: all screens, wired to the API; tested in a web build with the API mocked
 - [x] Mobile: photo placeholders replaced with large icons (package icon on detail and package rows, sparkle on the promo, building on centers); map preview removed — no Maps API key needed. Address comes from typing or "Use my current location" (OS geocoder, no key)
-- [ ] Mobile: the "20% off first wash" promo isn't applied anywhere; bell and filter buttons on Home are decorative; test on real devices
+- [x] Promo ("20% off first wash") removed from Home — there are no discounts
+- [x] Logo (Lucide "droplets", white on brand `#0EA5E9`, from the design) used for the mobile app icon, Android adaptive icon, splash and web favicon, and the admin favicon (`app/icon.png`). Swap in the owner's own logo file if they provide one
+- [ ] Mobile: bell and filter buttons on Home are decorative; test on real devices
 - [ ] Realtime updates (dashboard + "My booking"), rate limiting on public endpoints
