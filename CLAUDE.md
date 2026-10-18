@@ -105,7 +105,7 @@ Cloud sessions can't reach the live site, the database or Expo, but GitHub's run
 | `POST /api/auth/session` | — | `{ password }` → sets `skywash_admin` HttpOnly cookie (12 h). |
 | `DELETE /api/auth/session` | — | Sign out. |
 
-Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <ADMIN_PASSWORD>` (scripts). Cookie-authenticated writes must come from the same origin (CSRF guard in `lib/auth.ts`). `proxy.ts` redirects pages to `/login` without a valid cookie (and `/login` → `/` with one); API routes still check auth themselves.
+Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <ADMIN_PASSWORD>` (scripts). Cookie-authenticated writes must come from the same origin (CSRF guard in `lib/auth.ts`). `proxy.ts` redirects pages to `/login` without a valid cookie (and `/login` → `/` with one), except public pages in `PUBLIC_PAGES` (`/privacy`); API routes still check auth themselves.
 
 ## Setup rules & decisions
 
@@ -153,6 +153,7 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - [x] Mobile build config: `com.skywash.app`, `eas.json` (production `.aab`, preview `.apk`), production API URL
 - [x] Google Play reviewer booking: **`SW-ZHPC`** ("Google Play review", plate `REVIEW`, drive-in Mission Bay, Confirmed, dated 2026-11-16). Staff must not cancel or complete it while the app is in review. Reviewers' own test bookings will also show up in the dashboard; cancel those.
 - [x] First EAS production build: `.aab` 1.0.0 (versionCode 2), 2026-10-18 — https://expo.dev/accounts/sjkings/projects/skywash/builds/fe98c076-2fc2-474c-a650-98a2f10e6666
+- [x] Privacy policy: public page `/privacy` (https://skywash-admin-web.vercel.app/privacy) for business "Skywash", contact skywashservice@gmail.com; linked from the bottom of the app's Home screen (`PRIVACY_POLICY_URL` in `src/lib/api.ts`). Keep it in sync if data collection changes (e.g. adding analytics or payments)
 - [ ] Upload the `.aab` to Google Play (internal testing first), fill App access with reviewer code `SW-ZHPC`
 - [ ] Mobile: bell and filter buttons on Home are decorative; test on real devices
 - [ ] Realtime updates (dashboard + "My booking"), rate limiting on public endpoints

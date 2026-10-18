@@ -55,7 +55,11 @@ export function proxy(request: NextRequest) {
   return response;
 }
 
+// Pages anyone can open without signing in.
+const PUBLIC_PAGES = new Set(["/privacy"]);
+
 function guardPage(request: NextRequest) {
+  if (PUBLIC_PAGES.has(request.nextUrl.pathname)) return NextResponse.next();
   const signedIn = hasAdminSession(request);
   const onLogin = request.nextUrl.pathname === "/login";
   if (!signedIn && !onLogin) {

@@ -1,12 +1,12 @@
 import { router } from 'expo-router';
 import { Bell, ChevronDown, Clock, MapPin, Search, SlidersHorizontal, Star, Ticket } from 'lucide-react-native';
 import { useState } from 'react';
-import { Pressable, ScrollView, TextInput, View } from 'react-native';
+import { Linking, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PACKAGE_ICONS, packageSlug } from '@/components/PackageIcon';
 import { Text } from '@/components/Text';
 import { Tappable, useStatusBar } from '@/components/ui';
-import type { WashType } from '@/lib/api';
+import { PRIVACY_POLICY_URL, type WashType } from '@/lib/api';
 import { useBookingFlow } from '@/lib/booking-flow';
 import { PACKAGES } from '@/lib/catalog';
 import { colors, fonts, GUTTER } from '@/theme';
@@ -208,6 +208,16 @@ export default function HomeScreen() {
             );
           })}
         </View>
+
+        <Tappable
+          accessibilityRole="link"
+          onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}
+          style={{ alignSelf: 'center', paddingVertical: 8, paddingHorizontal: 12 }}
+        >
+          <Text size={13} weight={600} color={colors.slate500} style={{ textDecorationLine: 'underline' }}>
+            Privacy policy
+          </Text>
+        </Tappable>
       </View>
     </ScrollView>
   );
