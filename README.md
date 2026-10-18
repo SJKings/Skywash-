@@ -48,6 +48,17 @@ curl -H "Authorization: Bearer $ADMIN_PASSWORD" "http://localhost:3000/api/booki
 3. Add `ADMIN_PASSWORD` (and `CORS_ALLOWED_ORIGINS` if a browser client needs it).
 4. Deploy. Vercel runs the `vercel-build` script, which applies pending migrations (`prisma migrate deploy`) before building, so the tables are created on the first deploy.
 
+## Building the Android app
+
+```bash
+cd apps/mobile-app
+npx eas-cli@latest login
+npx eas-cli@latest build -p android --profile production   # .aab for Google Play
+npx eas-cli@latest build -p android --profile preview      # .apk to install on test phones
+```
+
+Builds run on Expo's servers and use the production API at https://skywash-admin-web.vercel.app.
+
 ## Design
 
 Each app has a `design/` folder with the Claude Design prototype (`*.dc.html`, open in a browser with `support.js` next to it) and `HANDOFF.md`, the full design spec.

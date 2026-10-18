@@ -73,6 +73,16 @@ Never commit `.env` files or real secrets.
 - Cloud sessions can't reach `db.prisma.io` or `*.vercel.app` (network policy).
 - The `VERCEL_TOKEN` in cloud sessions only sees the unrelated Posmo team projects. Never touch them.
 
+## Mobile builds (EAS)
+
+- Android package / application ID: `com.skywash.app` (permanent once on Google Play). iOS bundle ID not set yet.
+- `apps/mobile-app/eas.json`: `production` → Android App Bundle (`.aab`) for Google Play, `autoIncrement` with remote versioning; `preview` → installable `.apk` for testers. Both bake in `EXPO_PUBLIC_API_URL=https://skywash-admin-web.vercel.app`.
+- Build from `apps/mobile-app`: `npx eas-cli@latest build -p android --profile production`. Expo builds in the cloud and manages the signing key.
+- Not linked to an Expo project yet: the first `eas build` (or `npx eas-cli@latest init`) adds `extra.eas.projectId` and `owner` to `app.json`. Commit that. For GitHub-triggered builds, set the base directory to `apps/mobile-app` in the Expo project's GitHub settings.
+- Cloud sessions can't build: `expo.dev`/`api.expo.dev` and Google's Android SDK downloads are blocked, and there's no `EXPO_TOKEN`.
+- `android.blockedPermissions` drops storage and overlay permissions the app doesn't use. Location (fine/coarse) is requested only for "Use my current location".
+- Validate native config without building: `CI=1 EXPO_OFFLINE=1 npx expo prebuild --platform android --no-install`, inspect `android/`, then delete it (gitignored) and revert the `package.json` script changes prebuild makes.
+
 ## API contract
 
 | Method & path | Auth | Purpose |
@@ -129,5 +139,7 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - [x] Mobile: photo placeholders replaced with large icons (package icon on detail and package rows, sparkle on the promo, building on centers); map preview removed — no Maps API key needed. Address comes from typing or "Use my current location" (OS geocoder, no key)
 - [x] Promo ("20% off first wash") removed from Home — there are no discounts
 - [x] Logo (Lucide "droplets", white on brand `#0EA5E9`, from the design) used for the mobile app icon, Android adaptive icon, splash and web favicon, and the admin favicon (`app/icon.png`). Swap in the owner's own logo file if they provide one
+- [x] Mobile build config: `com.skywash.app`, `eas.json` (production `.aab`, preview `.apk`), production API URL
+- [ ] First EAS build (links the Expo project); Vercel Authentication must be off on the production URL or the app can't reach the API
 - [ ] Mobile: bell and filter buttons on Home are decorative; test on real devices
 - [ ] Realtime updates (dashboard + "My booking"), rate limiting on public endpoints
