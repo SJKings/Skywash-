@@ -1,0 +1,106 @@
+# End-to-end booking test against the deployed API.
+# Creates ONE booking named "Skywash API test" (plate TEST), moves it through
+# the admin flow and cancels it. It stays in the database as Cancelled.
+# Needs the ADMIN_PASSWORD repository secret. Run from the Actions tab.
+name: API booking test
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Deployed admin-web URL
+        default: https://skywash-admin-web.vercel.app
+
+jobs:
+  booking-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Book, track, approve, cancel
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        run: |
+          node --input-type=module <<'EOF' | tee -a "$GITHUB_STEP_SUMMARY"
+          const base = process.env.BASE_URL.replace(/\/$/, "");
+          const password = process.env.ADMIN_PASSWORD;
+          const rows = [];
+          let failed = false;
+
+          function record(ok, step, detail) {
+            rows.push(`| ${ok ? "✅" : "❌"} | ${step} | ${detail} |`);
+            if (!ok) failed = true;
+            return ok;
+          }
+
+          async function call(method, path, { body, auth } = {}) {
+            const headers = { "Content-Type": "application/json" };
+            if (auth) headers.Authorization = `Bearer ${auth}`;
+            const res = await fetch(base + path, { method, headers, body: body && JSON.stringify(body) });
+            const json = await res.json().catch(() => null);
+            return { status: res.status, json };
+          }
+
+          async function run() {
+            if (!password) return record(false, "Setup", "ADMIN_PASSWORD secret is not available to this workflow");
+
+            // 1. Create, as the mobile app does (no Origin header, no auth).
+            const bookingDate = new Date(Date.now() + 2 * 24 * 3600 * 1000).toISOString();
+            const created = await call("POST", "/api/bookings", {
+              body: {
+                customerName: "Skywash API test",
+                phone: "(000) 000-0000",
+                vehicleType: "SEDAN",
+                licensePlate: "TEST",
+                washType: "EXTERIOR",
+                serviceMode: "DRIVE_IN",
+                centerId: "mission-bay",
+                bookingDate,
+              },
+            });
+            const b = created.json?.booking;
+            if (!record(created.status === 201 && /^SW-[A-Z0-9]{4}$/.test(b?.code ?? ""), "Create booking (app)", `${created.status} → code ${b?.code ?? created.json?.error}`)) return;
+            record(b.totalPrice === 25, "Server computes price", `$${b.totalPrice} (Exterior $25 + drive-in $0)`);
+            record(b.status === "PENDING", "Starts as New", b.status);
+
+            // 2. Track by code, as "My booking" does.
+            const tracked = await call("GET", `/api/bookings/${b.code.toLowerCase().replace("-", " ")}`);
+            record(tracked.status === 200 && tracked.json?.booking?.code === b.code, "Track by code (loose typing)", `${tracked.status}`);
+            record(tracked.status === 200 && !("customerName" in tracked.json.booking) && !("phone" in tracked.json.booking), "Public view hides name and phone", Object.keys(tracked.json?.booking ?? {}).join(", "));
+
+            // 3. Admin list, as the dashboard does.
+            const denied = await call("GET", `/api/bookings?status=all&q=${b.code}`, { auth: "wrong-password" });
+            record(denied.status === 401, "Wrong admin password refused", `${denied.status}`);
+            const listed = await call("GET", `/api/bookings?status=all&q=${b.code}`, { auth: password });
+            const row = listed.json?.bookings?.find((x) => x.code === b.code);
+            if (!record(listed.status === 200 && row?.customerName === "Skywash API test", "Appears in admin list", `${listed.status}${listed.status === 401 ? " — ADMIN_PASSWORD secret doesn't match Vercel's" : ""}`)) return;
+
+            // 4. Staff confirm it; the customer sees the change.
+            const approved = await call("PATCH", `/api/bookings/${row.id}`, { body: { status: "APPROVED" }, auth: password });
+            record(approved.status === 200 && approved.json?.booking?.status === "APPROVED", "Staff confirm booking", `${approved.status} → ${approved.json?.booking?.status ?? approved.json?.error}`);
+            const seen = await call("GET", `/api/bookings/${b.code}`);
+            record(seen.json?.booking?.status === "APPROVED", "Customer sees Confirmed", seen.json?.booking?.status);
+
+            // 5. Status flow can't skip steps.
+            const skip = await call("PATCH", `/api/bookings/${row.id}`, { body: { status: "COMPLETED" }, auth: password });
+            record(skip.status === 409, "Skipping to Completed rejected", `${skip.status}`);
+
+            // 6. Clean up.
+            const cancelled = await call("PATCH", `/api/bookings/${row.id}`, { body: { status: "CANCELLED" }, auth: password });
+            record(cancelled.status === 200 && cancelled.json?.booking?.status === "CANCELLED", "Cancel test booking (cleanup)", `${cancelled.status} → ${cancelled.json?.booking?.status ?? cancelled.json?.error}`);
+          }
+
+          try {
+            await run();
+          } catch (e) {
+            record(false, "Request failed", e.message);
+          }
+          console.log(`### API booking test: ${base}\n`);
+          console.log("| | Step | Detail |\n|---|---|---|");
+          console.log(rows.join("\n"));
+          process.exitCode = failed ? 1 : 0;
+          EOF
