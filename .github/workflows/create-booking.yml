@@ -1,0 +1,77 @@
+# Creates one long-lived demo booking on the deployed API, e.g. for app store
+# reviewers, and prints its code. Drive-in only, so no team is sent anywhere.
+# Needs the ADMIN_PASSWORD repository secret to set the status.
+name: Create demo booking
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: Customer name shown to staff
+        default: Google Play review
+      plate:
+        description: License plate (A-Z, 0-9, max 12)
+        default: REVIEW
+      status:
+        description: Status to leave it in
+        type: choice
+        options:
+          - APPROVED
+          - PENDING
+          - IN_PROGRESS
+        default: APPROVED
+      base_url:
+        description: Deployed admin-web URL
+        default: https://skywash-admin-web.vercel.app
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Create booking
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          NAME: ${{ inputs.name }}
+          PLATE: ${{ inputs.plate }}
+          STATUS: ${{ inputs.status }}
+        run: |
+          node --input-type=module <<'EOF' | tee -a "$GITHUB_STEP_SUMMARY"
+          const base = process.env.BASE_URL.replace(/\/$/, "");
+          const auth = { "Content-Type": "application/json", Authorization: `Bearer ${process.env.ADMIN_PASSWORD}` };
+
+          async function call(method, path, body, headers = { "Content-Type": "application/json" }) {
+            const res = await fetch(base + path, { method, headers, body: body && JSON.stringify(body) });
+            const json = await res.json().catch(() => null);
+            if (!res.ok) throw new Error(`${method} ${path} → ${res.status} ${JSON.stringify(json)}`);
+            return json;
+          }
+
+          // Latest allowed date (the API accepts up to 30 days ahead), 10:00 San Diego time.
+          const day = new Date(Date.now() + 29 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+          const { booking } = await call("POST", "/api/bookings", {
+            customerName: process.env.NAME,
+            phone: "(000) 000-0000",
+            vehicleType: "SEDAN",
+            licensePlate: process.env.PLATE,
+            washType: "FULL_DETAIL",
+            serviceMode: "DRIVE_IN",
+            centerId: "mission-bay",
+            bookingDate: `${day}T10:00:00-08:00`,
+          });
+
+          const steps = { PENDING: [], APPROVED: ["APPROVED"], IN_PROGRESS: ["APPROVED", "IN_PROGRESS"] }[process.env.STATUS];
+          const { bookings } = await call("GET", `/api/bookings?status=all&q=${booking.code}`, undefined, auth);
+          const id = bookings.find((b) => b.code === booking.code).id;
+          for (const status of steps) await call("PATCH", `/api/bookings/${id}`, { status }, auth);
+
+          console.log(`### Demo booking created: \`${booking.code}\`\n`);
+          console.log(`- ${process.env.NAME} · plate ${process.env.PLATE} · Full Detail · drive-in at Skywash Mission Bay`);
+          console.log(`- Date: ${day} 10:00 AM (San Diego) · Status: ${process.env.STATUS}`);
+          console.log(`- In the app: My booking → enter ${booking.code}`);
+          EOF
