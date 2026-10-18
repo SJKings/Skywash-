@@ -46,7 +46,7 @@ curl -H "Authorization: Bearer $ADMIN_PASSWORD" "http://localhost:3000/api/booki
 1. Import the repo and set **Root Directory** to `apps/admin-web`.
 2. Connect Prisma Postgres (Storage → Prisma Postgres). It sets `DATABASE_POSTGRES_URL` (with the `DATABASE` prefix), which the app reads when `DATABASE_URL` is unset.
 3. Add `ADMIN_PASSWORD` (and `CORS_ALLOWED_ORIGINS` if a browser client needs it).
-4. Run `npm run db:deploy` against the production database once, and after each new migration.
+4. Deploy. Vercel runs the `vercel-build` script, which applies pending migrations (`prisma migrate deploy`) before building, so the tables are created on the first deploy.
 
 ## Design
 

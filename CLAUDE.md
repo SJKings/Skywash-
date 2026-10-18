@@ -35,7 +35,7 @@ npm workspaces; run everything from the repo root.
 | Typecheck both apps | `npm run typecheck` |
 | Regenerate Prisma client | `npm run db:generate` |
 | New migration after editing schema | `npm run db:migrate -- --name <change>` |
-| Apply migrations (prod / fresh DB) | `npm run db:deploy` |
+| Apply migrations (prod / fresh DB) | `npm run db:deploy` — Vercel also runs this on every deploy via the `vercel-build` script |
 | Seed demo bookings (incl. `SW-4FQ2`) | `npm run db:seed` |
 | Prisma Studio | `npm run db:studio` |
 | Add a mobile dependency | `cd apps/mobile-app && npx expo install <pkg>` (never plain `npm i`) |
@@ -78,7 +78,7 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 
 - **Next.js 16 and Expo 58 differ from older docs.** Before writing Next code, read `node_modules/next/dist/docs/`; for Expo, the versioned docs at docs.expo.dev (see each app's `AGENTS.md`).
 - **Prisma 7**: `prisma.config.ts` holds the datasource URL (not `schema.prisma`); the client is generated to `apps/admin-web/lib/generated/prisma` (gitignored) and imported from `@/lib/generated/prisma/client`. The app connects through the `pg` driver adapter (`lib/prisma.ts`) — plain TCP Postgres, so it works with Prisma Postgres or any other Postgres. (The Neon adapter was dropped: it only speaks Neon's protocol.)
-- Change the schema only via `prisma migrate dev` so every change has a committed migration in `prisma/migrations/`.
+- Change the schema only via `prisma migrate dev` so every change has a committed migration in `prisma/migrations/`. Vercel applies pending migrations at deploy time (`vercel-build`: `prisma migrate deploy` before `next build`), for preview deploys too if they share the database — so migrations must be backward compatible with the code currently live.
 - **Server is the source of truth** for prices, booking codes and status transitions — never trust totals or codes from the client. Prices/centers live in `apps/admin-web/lib/catalog.ts`.
 - Booking codes: `SW-` + 4 chars from `ABCDEFGHJKMNPQRSTUVWXYZ23456789` (no 0/O/1/I/L), unique, generated in `lib/booking-code.ts`.
 - Validation with zod in `lib/validation.ts`; route handlers return `{ error, issues? }` with 400/401/404/409.
@@ -105,7 +105,7 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - [x] Monorepo scaffold (npm workspaces), design files placed per app
 - [x] Prisma schema + initial migration (`20261018000000_init`), seed script
 - [x] API routes, admin auth, CORS
-- [ ] Database: Prisma Postgres connected (env `DATABASE_POSTGRES_URL`); still to run `npm run db:deploy && npm run db:seed` — blocked from cloud sessions until `db.prisma.io` is an allowed domain
+- [ ] Database: Prisma Postgres connected (env `DATABASE_POSTGRES_URL`), `ADMIN_PASSWORD` set on Vercel. Tables get created by the next Vercel deploy (`vercel-build`). Not yet verified. Cloud sessions can't reach `db.prisma.io` (network policy), so test against the deployed site. Demo seed (`npm run db:seed`) only from a machine that can reach the DB — skip it for production.
 - [x] Admin dashboard UI (login + bookings table/detail) from `Skywash Dashboard.dc.html`
 - [ ] Mobile screens (Expo Router) from `Skywash App.dc.html`
 - [ ] Realtime updates (dashboard + "My booking"), rate limiting on public endpoints
