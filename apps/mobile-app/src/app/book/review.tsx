@@ -7,7 +7,7 @@ import { Text } from '@/components/Text';
 import { ErrorBanner } from '@/components/ui';
 import { ApiError, createBooking } from '@/lib/api';
 import { bookingDay, draftTotal, serviceModeOf, toNewBooking, useBookingFlow } from '@/lib/booking-flow';
-import { FEE_LABELS, getCenter, getPackage, MODE_LABELS, SERVICE_FEES, VEHICLES } from '@/lib/catalog';
+import { FEE_LABELS, formatNaira, getCenter, getPackage, MODE_LABELS, SERVICE_FEES, VEHICLES } from '@/lib/catalog';
 import { addRecentCode } from '@/lib/recent-codes';
 import { formatDay, formatSlot } from '@/lib/time';
 import { colors } from '@/theme';
@@ -38,7 +38,7 @@ function PriceRow({ label, amount }: { label: string; amount: number }) {
       <Text size={14} color={colors.slate500}>
         {label}
       </Text>
-      <Text size={14}>${amount}</Text>
+      <Text size={14}>{formatNaira(amount)}</Text>
     </View>
   );
 }
@@ -115,11 +115,11 @@ export default function ReviewStep() {
             Total
           </Text>
           <Text size={17} weight={800} color={colors.brandText}>
-            ${draftTotal(draft)}
+            {formatNaira(draftTotal(draft))}
           </Text>
         </View>
         <Text size={12} color={colors.slate500}>
-          Pay on completion. Cash or card.
+          Pay on completion. Cash, card or bank transfer.
         </Text>
       </View>
     </FlowScreen>

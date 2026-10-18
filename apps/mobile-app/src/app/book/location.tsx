@@ -123,7 +123,7 @@ function CenterList() {
                 {c.address}
               </Text>
               <Text size={12} weight={600} color={colors.brandText}>
-                {c.distance} · Open {c.hours}
+                Open {c.hours}
               </Text>
             </View>
           </Tappable>

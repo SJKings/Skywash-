@@ -5,6 +5,7 @@ import { FlowScreen } from '@/components/FlowScreen';
 import { Text } from '@/components/Text';
 import { IconTile, Tappable } from '@/components/ui';
 import { stepValid, useBookingFlow, type CenterTransport, type Place } from '@/lib/booking-flow';
+import { formatNaira, SERVICE_FEES } from '@/lib/catalog';
 import { colors } from '@/theme';
 
 function PlaceCard({
@@ -113,7 +114,7 @@ export default function ServiceTypeStep() {
       <PlaceCard
         icon={House}
         title="Home service"
-        fee="+$10"
+        fee={`+${formatNaira(SERVICE_FEES.HOME)}`}
         description="Our team comes to your home or office with water and power."
         selected={draft.place === 'HOME'}
         onPress={() => pickPlace('HOME')}
@@ -134,7 +135,7 @@ export default function ServiceTypeStep() {
             <TransportTile
               icon={Truck}
               title="Pickup & return"
-              description="We collect and bring it back. +$15"
+              description={`We collect and bring it back. +${formatNaira(SERVICE_FEES.PICKUP)}`}
               selected={draft.transport === 'PICKUP'}
               onPress={() => pickTransport('PICKUP')}
             />

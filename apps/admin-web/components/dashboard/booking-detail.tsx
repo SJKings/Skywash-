@@ -1,5 +1,5 @@
 import { ArrowRight, ArrowUpRight, Phone } from "lucide-react";
-import { PACKAGES } from "@/lib/catalog";
+import { formatNaira, PACKAGES } from "@/lib/catalog";
 import { canCancel, formatWhen, MODE_LABELS, nextAction } from "@/lib/format";
 import type { BookingStatus } from "@/lib/generated/prisma/enums";
 import { bookingLocation, vehicleLabel } from "./bookings-table";
@@ -81,7 +81,7 @@ export function BookingDetail({
             </span>
           </Field>
           <Field label="Total">
-            <span className="font-bold text-sky-700">${b.totalPrice}</span>
+            <span className="font-bold text-sky-700">{formatNaira(b.totalPrice)}</span>
           </Field>
         </div>
 

@@ -12,6 +12,10 @@ on:
       plate:
         description: License plate (A-Z, 0-9, max 12)
         default: REVIEW
+      replace_code:
+        description: Optional code of an old demo booking to cancel (e.g. SW-ZHPC)
+        required: false
+        default: ""
       status:
         description: Status to leave it in
         type: choice
@@ -40,6 +44,7 @@ jobs:
           NAME: ${{ inputs.name }}
           PLATE: ${{ inputs.plate }}
           STATUS: ${{ inputs.status }}
+          REPLACE_CODE: ${{ inputs.replace_code }}
         run: |
           node --input-type=module <<'EOF' | tee -a "$GITHUB_STEP_SUMMARY"
           const base = process.env.BASE_URL.replace(/\/$/, "");
@@ -63,7 +68,7 @@ jobs:
             licensePlate: process.env.PLATE,
             washType: "FULL_DETAIL",
             serviceMode: "DRIVE_IN",
-            centerId: "mission-bay",
+            centerId: "lekki",
             bookingDate: `${day}T10:00:00${offset}`,
           });
 
@@ -72,8 +77,22 @@ jobs:
           const id = bookings.find((b) => b.code === booking.code).id;
           for (const status of steps) await call("PATCH", `/api/bookings/${id}`, { status }, auth);
 
+          const old = process.env.REPLACE_CODE.trim().toUpperCase();
+          let replaced = "";
+          if (old) {
+            const found = await call("GET", `/api/bookings?status=all&q=${encodeURIComponent(old)}`, undefined, auth);
+            const prev = found.bookings.find((b) => b.code === old);
+            if (prev && !["COMPLETED", "CANCELLED"].includes(prev.status)) {
+              await call("PATCH", `/api/bookings/${prev.id}`, { status: "CANCELLED" }, auth);
+              replaced = `- Cancelled old demo booking ${old}`;
+            } else {
+              replaced = `- Old demo booking ${old}: ${prev ? `already ${prev.status}` : "not found"}`;
+            }
+          }
+
           console.log(`### Demo booking created: \`${booking.code}\`\n`);
-          console.log(`- ${process.env.NAME} · plate ${process.env.PLATE} · Full Detail · drive-in at Skywash Mission Bay`);
+          if (replaced) console.log(replaced);
+          console.log(`- ${process.env.NAME} · plate ${process.env.PLATE} · Full Detail · drive-in at Skywash Lekki`);
           console.log(`- Date: ${day} 10:00 AM (Lagos) · Status: ${process.env.STATUS}`);
           console.log(`- In the app: My booking → enter ${booking.code}`);
           EOF

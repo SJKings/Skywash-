@@ -58,13 +58,13 @@ jobs:
                 licensePlate: "TEST",
                 washType: "EXTERIOR",
                 serviceMode: "DRIVE_IN",
-                centerId: "mission-bay",
+                centerId: "lekki",
                 bookingDate,
               },
             });
             const b = created.json?.booking;
             if (!record(created.status === 201 && /^SW-[A-Z0-9]{4}$/.test(b?.code ?? ""), "Create booking (app)", `${created.status} → code ${b?.code ?? created.json?.error}`)) return;
-            record(b.totalPrice === 25, "Server computes price", `$${b.totalPrice} (Exterior $25 + drive-in $0)`);
+            record(b.totalPrice === 5000, "Server computes price", `₦${b.totalPrice} (Exterior ₦5,000 + drive-in ₦0)`);
             record(b.status === "PENDING", "Starts as New", b.status);
 
             // 2. Track by code, as "My booking" does.

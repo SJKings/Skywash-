@@ -1,5 +1,5 @@
 // Service catalog from the design (PKGS / CENTERS in design/Skywash App.dc.html).
-// Prices must match apps/admin-web/lib/catalog.ts — the server recomputes the
+// Prices (whole Naira) must match apps/admin-web/lib/catalog.ts — the server recomputes the
 // total on every booking, so these are for display only.
 import type { ServiceMode, VehicleType, WashType } from './api';
 
@@ -20,7 +20,7 @@ export const PACKAGES: Package[] = [
     id: 'EXTERIOR',
     name: 'Exterior Wash',
     short: 'Exterior',
-    price: 25,
+    price: 5_000,
     duration: '45 min',
     rating: '4.8',
     reviews: '412',
@@ -36,7 +36,7 @@ export const PACKAGES: Package[] = [
     id: 'INTERIOR',
     name: 'Interior Clean',
     short: 'Interior',
-    price: 35,
+    price: 7_000,
     duration: '1 hr',
     rating: '4.7',
     reviews: '286',
@@ -52,7 +52,7 @@ export const PACKAGES: Package[] = [
     id: 'FULL_DETAIL',
     name: 'Full Detail',
     short: 'Full detail',
-    price: 89,
+    price: 25_000,
     duration: '2.5 hrs',
     rating: '4.9',
     reviews: '365',
@@ -68,7 +68,7 @@ export const PACKAGES: Package[] = [
     id: 'ENGINE_BAY',
     name: 'Engine Bay',
     short: 'Engine bay',
-    price: 45,
+    price: 10_000,
     duration: '40 min',
     rating: '4.6',
     reviews: '98',
@@ -87,16 +87,21 @@ export function getPackage(id: WashType) {
 }
 
 export const CENTERS = [
-  { id: 'mission-bay', name: 'Skywash Mission Bay', address: '1200 Garnet Ave, San Diego', distance: '1.2 mi', hours: '7am–8pm' },
-  { id: 'north-park', name: 'Skywash North Park', address: '3015 University Ave, San Diego', distance: '2.8 mi', hours: '7am–7pm' },
-  { id: 'chula-vista', name: 'Skywash Chula Vista', address: '455 Broadway, Chula Vista', distance: '7.4 mi', hours: '8am–6pm' },
+  { id: 'lekki', name: 'Skywash Lekki', address: 'Lekki Phase 1, Lagos', hours: '8am–7pm' },
+  { id: 'ikeja', name: 'Skywash Ikeja', address: 'Ikeja GRA, Lagos', hours: '8am–7pm' },
+  { id: 'victoria-island', name: 'Skywash Victoria Island', address: 'Victoria Island, Lagos', hours: '8am–7pm' },
 ] as const;
 
 export function getCenter(id: string | null | undefined) {
   return CENTERS.find((c) => c.id === id);
 }
 
-export const SERVICE_FEES: Record<ServiceMode, number> = { HOME: 10, PICKUP: 15, DRIVE_IN: 0 };
+export const SERVICE_FEES: Record<ServiceMode, number> = { HOME: 3_000, PICKUP: 5_000, DRIVE_IN: 0 };
+
+/** "₦25,000" (manual grouping: Hermes number formatting varies). */
+export function formatNaira(amount: number) {
+  return `₦${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+}
 
 export const MODE_LABELS: Record<ServiceMode, string> = {
   HOME: 'Home service',
@@ -117,8 +122,8 @@ export const VEHICLES: { id: VehicleType; label: string }[] = [
   { id: 'TRUCK', label: 'Truck' },
 ];
 
-/** Bookable start times, Lagos time. */
-export const TIME_SLOTS = ['08:00', '09:30', '11:00', '12:30', '14:00', '15:30', '17:00'];
+/** Bookable start times, Lagos time. Centers close at 7pm; the last slot leaves room for a 2.5 hr Full Detail. */
+export const TIME_SLOTS = ['08:00', '09:30', '11:00', '12:30', '14:00', '15:30'];
 
 /** How many days ahead customers can book (today + 5). */
 export const BOOKING_DAYS = 6;

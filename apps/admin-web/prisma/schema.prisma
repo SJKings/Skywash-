@@ -61,7 +61,7 @@ model Booking {
   centerId     String?
   /// Appointment start (date + time slot).
   bookingDate  DateTime
-  /// Package price + service fee, in whole US dollars. Computed server-side.
+  /// Package price + service fee, in whole Naira. Computed server-side.
   totalPrice   Int
   status       BookingStatus @default(PENDING)
   createdAt    DateTime      @default(now())

@@ -6,7 +6,7 @@ import { PACKAGE_ICONS, packageFromSlug } from '@/components/PackageIcon';
 import { Text } from '@/components/Text';
 import { BottomBar, Button, Tappable, useStatusBar } from '@/components/ui';
 import { useBookingFlow } from '@/lib/booking-flow';
-import { getPackage } from '@/lib/catalog';
+import { formatNaira, getPackage } from '@/lib/catalog';
 import { colors, GUTTER } from '@/theme';
 
 function RoundButton({ label, onPress, children }: { label: string; onPress: () => void; children: React.ReactNode }) {
@@ -45,7 +45,7 @@ export default function ServiceDetailScreen() {
             </RoundButton>
             <RoundButton
               label="Share"
-              onPress={() => Share.share({ message: `${pkg.name} at Skywash — $${pkg.price}, ${pkg.duration}. ${pkg.description}` })}
+              onPress={() => Share.share({ message: `${pkg.name} at Skywash — ${formatNaira(pkg.price)}, ${pkg.duration}. ${pkg.description}` })}
             >
               <Share2 size={18} color={colors.ink} />
             </RoundButton>
@@ -121,7 +121,7 @@ export default function ServiceDetailScreen() {
               From
             </Text>
             <Text size={22} weight={800}>
-              ${pkg.price}
+              {formatNaira(pkg.price)}
             </Text>
           </View>
           <Button

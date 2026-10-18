@@ -8,7 +8,7 @@ import { Text } from '@/components/Text';
 import { Tappable, useStatusBar } from '@/components/ui';
 import { PRIVACY_POLICY_URL, type WashType } from '@/lib/api';
 import { useBookingFlow } from '@/lib/booking-flow';
-import { PACKAGES } from '@/lib/catalog';
+import { formatNaira, PACKAGES } from '@/lib/catalog';
 import { colors, fonts, GUTTER } from '@/theme';
 
 export default function HomeScreen() {
@@ -202,7 +202,7 @@ export default function HomeScreen() {
                   </View>
                 </View>
                 <Text size={16} weight={700} color={colors.brandText} style={{ paddingRight: 6 }}>
-                  ${p.price}
+                  {formatNaira(p.price)}
                 </Text>
               </Tappable>
             );

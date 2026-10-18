@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@/components/Text';
 import { ErrorBanner, StatusPill, Tappable, useStatusBar } from '@/components/ui';
 import { findBooking, type BookingStatus, type PublicBooking, type ServiceMode } from '@/lib/api';
-import { getCenter, getPackage, MODE_LABELS } from '@/lib/catalog';
+import { formatNaira, getCenter, getPackage, MODE_LABELS } from '@/lib/catalog';
 import { getRecentCodes, normalizeCode } from '@/lib/recent-codes';
 import { formatWhen } from '@/lib/time';
 import { colors, fonts, GUTTER } from '@/theme';
@@ -94,7 +94,7 @@ function BookingCard({ booking: b }: { booking: PublicBooking }) {
         <DetailRow label="Type" value={MODE_LABELS[b.serviceMode]} />
         <DetailRow label="When" value={formatWhen(b.bookingDate)} />
         <DetailRow label={b.serviceMode === 'DRIVE_IN' ? 'Center' : b.serviceMode === 'PICKUP' ? 'Pickup from' : 'Address'} value={where} />
-        <DetailRow label="Total" value={`$${b.totalPrice}`} accent />
+        <DetailRow label="Total" value={formatNaira(b.totalPrice)} accent />
       </View>
     </View>
   );

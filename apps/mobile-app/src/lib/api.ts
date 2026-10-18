@@ -19,7 +19,7 @@ export interface NewBooking {
   latitude?: number;
   longitude?: number;
   notes?: string;
-  /** Required for DRIVE_IN: 'mission-bay' | 'north-park' | 'chula-vista'. */
+  /** Required for DRIVE_IN: 'lekki' | 'ikeja' | 'victoria-island'. */
   centerId?: string;
   /** ISO 8601 with offset, e.g. '2026-10-20T09:30:00+01:00' (Lagos time). */
   bookingDate: string;

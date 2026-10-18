@@ -1,24 +1,24 @@
-// Service catalog from the design handoff. Prices are whole US dollars.
+// Service catalog. Prices are whole Naira (NGN).
 // The server is the source of truth for pricing: totals are always computed here.
 import type { ServiceMode, WashType } from "@/lib/generated/prisma/enums";
 
 export const PACKAGES: Record<WashType, { name: string; price: number; duration: string }> = {
-  EXTERIOR: { name: "Exterior Wash", price: 25, duration: "45 min" },
-  INTERIOR: { name: "Interior Clean", price: 35, duration: "1 hr" },
-  FULL_DETAIL: { name: "Full Detail", price: 89, duration: "2.5 hrs" },
-  ENGINE_BAY: { name: "Engine Bay", price: 45, duration: "40 min" },
+  EXTERIOR: { name: "Exterior Wash", price: 5_000, duration: "45 min" },
+  INTERIOR: { name: "Interior Clean", price: 7_000, duration: "1 hr" },
+  FULL_DETAIL: { name: "Full Detail", price: 25_000, duration: "2.5 hrs" },
+  ENGINE_BAY: { name: "Engine Bay", price: 10_000, duration: "40 min" },
 };
 
 export const SERVICE_FEES: Record<ServiceMode, number> = {
-  HOME: 10,
-  PICKUP: 15,
+  HOME: 3_000,
+  PICKUP: 5_000,
   DRIVE_IN: 0,
 };
 
 export const CENTERS = [
-  { id: "mission-bay", name: "Skywash Mission Bay", address: "1200 Garnet Ave, San Diego", hours: "7am–8pm" },
-  { id: "north-park", name: "Skywash North Park", address: "3015 University Ave, San Diego", hours: "7am–7pm" },
-  { id: "chula-vista", name: "Skywash Chula Vista", address: "455 Broadway, Chula Vista", hours: "8am–6pm" },
+  { id: "lekki", name: "Skywash Lekki", address: "Lekki Phase 1, Lagos", hours: "8am–7pm" },
+  { id: "ikeja", name: "Skywash Ikeja", address: "Ikeja GRA, Lagos", hours: "8am–7pm" },
+  { id: "victoria-island", name: "Skywash Victoria Island", address: "Victoria Island, Lagos", hours: "8am–7pm" },
 ] as const;
 
 export type CenterId = (typeof CENTERS)[number]["id"];
@@ -31,6 +31,11 @@ export function bookingTotal(washType: WashType, serviceMode: ServiceMode) {
 
 /** All centers are in Lagos; appointment times are shown in this zone (WAT, UTC+1, no DST). */
 export const BUSINESS_TIME_ZONE = "Africa/Lagos";
+
+/** "₦25,000" */
+export function formatNaira(amount: number) {
+  return `₦${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+}
 
 export function centerName(centerId: string | null) {
   return CENTERS.find((c) => c.id === centerId)?.name ?? "Unknown center";

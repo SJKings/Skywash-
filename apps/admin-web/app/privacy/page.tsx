@@ -77,7 +77,7 @@ export default function PrivacyPolicyPage() {
             stay on your device and are removed if you uninstall the app.
           </p>
           <p>
-            We do not collect payment information in the app (you pay on completion, by cash or card), and we
+            We do not collect payment information in the app (you pay on completion, by cash, card or bank transfer), and we
             do not use advertising, analytics or tracking tools.
           </p>
         </Section>
