@@ -89,6 +89,7 @@ Never commit `.env` files or real secrets.
 |---|---|---|
 | `eas-build.yml` | EAS Android build on Expo's servers; `production` → `.aab`, `preview` → `.apk`. Links the Expo project on first run. Build page and download link in the job summary. | `EXPO_TOKEN` |
 | `api-check.yml` | Read-only check of the deployed API (site up, database reachable, admin protected, Vercel Authentication not blocking). | — |
+| `create-booking.yml` | Creates one long-lived drive-in demo booking (name/plate/status inputs) and prints its code. | `ADMIN_PASSWORD` |
 | `api-booking-test.yml` | Creates one "Skywash API test" booking (plate `TEST`), tracks it, confirms it via admin, checks the flow guard, cancels it. Leaves a Cancelled booking in the database. | `ADMIN_PASSWORD` |
 
 Cloud sessions can't reach the live site, the database or Expo, but GitHub's runners can: use these workflows to test or build, and read results with the GitHub job logs.
@@ -150,6 +151,7 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - [x] Promo ("20% off first wash") removed from Home — there are no discounts
 - [x] Logo (Lucide "droplets", white on brand `#0EA5E9`, from the design) used for the mobile app icon, Android adaptive icon, splash and web favicon, and the admin favicon (`app/icon.png`). Swap in the owner's own logo file if they provide one
 - [x] Mobile build config: `com.skywash.app`, `eas.json` (production `.aab`, preview `.apk`), production API URL
+- [x] Google Play reviewer booking: **`SW-ZHPC`** ("Google Play review", plate `REVIEW`, drive-in Mission Bay, Confirmed, dated 2026-11-16). Staff must not cancel or complete it while the app is in review. Reviewers' own test bookings will also show up in the dashboard; cancel those.
 - [ ] First EAS build (links the Expo project); Vercel Authentication must be off on the production URL or the app can't reach the API
 - [ ] Mobile: bell and filter buttons on Home are decorative; test on real devices
 - [ ] Realtime updates (dashboard + "My booking"), rate limiting on public endpoints
