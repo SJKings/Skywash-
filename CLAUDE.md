@@ -79,9 +79,19 @@ Never commit `.env` files or real secrets.
 - `apps/mobile-app/eas.json`: `production` → Android App Bundle (`.aab`) for Google Play, `autoIncrement` with remote versioning; `preview` → installable `.apk` for testers. Both bake in `EXPO_PUBLIC_API_URL=https://skywash-admin-web.vercel.app`.
 - Build from `apps/mobile-app`: `npx eas-cli@latest build -p android --profile production`. Expo builds in the cloud and manages the signing key.
 - Not linked to an Expo project yet: the first `eas build` (or `npx eas-cli@latest init`) adds `extra.eas.projectId` and `owner` to `app.json`. Commit that. For GitHub-triggered builds, set the base directory to `apps/mobile-app` in the Expo project's GitHub settings.
-- Cloud sessions can't build: `expo.dev`/`api.expo.dev` and Google's Android SDK downloads are blocked, and there's no `EXPO_TOKEN`.
+- Cloud sessions can't build directly (`expo.dev` and Google's Android SDK downloads are blocked); use the `eas-build.yml` GitHub Action, which has the `EXPO_TOKEN` secret.
 - `android.blockedPermissions` drops storage and overlay permissions the app doesn't use. Location (fine/coarse) is requested only for "Use my current location".
 - Validate native config without building: `CI=1 EXPO_OFFLINE=1 npx expo prebuild --platform android --no-install`, inspect `android/`, then delete it (gitignored) and revert the `package.json` script changes prebuild makes.
+
+## GitHub Actions (all manual: Actions tab → Run workflow, or the GitHub API)
+
+| Workflow | What it does | Secrets |
+|---|---|---|
+| `eas-build.yml` | EAS Android build on Expo's servers; `production` → `.aab`, `preview` → `.apk`. Links the Expo project on first run. Build page and download link in the job summary. | `EXPO_TOKEN` |
+| `api-check.yml` | Read-only check of the deployed API (site up, database reachable, admin protected, Vercel Authentication not blocking). | — |
+| `api-booking-test.yml` | Creates one "Skywash API test" booking (plate `TEST`), tracks it, confirms it via admin, checks the flow guard, cancels it. Leaves a Cancelled booking in the database. | `ADMIN_PASSWORD` |
+
+Cloud sessions can't reach the live site, the database or Expo, but GitHub's runners can: use these workflows to test or build, and read results with the GitHub job logs.
 
 ## API contract
 
@@ -133,7 +143,7 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - [x] Prisma schema + initial migration (`20261018000000_init`), seed script
 - [x] API routes, admin auth, CORS
 - [x] Database: Prisma Postgres; migration `20261018000000_init` applied (confirmed in the Vercel build log)
-- [ ] Vercel: `skywash-admin-web` (owner's account). Confirm `ADMIN_PASSWORD` and the database URL are set there; make sure Vercel Authentication doesn't block the production URL before the mobile app goes live
+- [x] Vercel `skywash-admin-web` verified live on 2026-10-18 by the `API check` and `API booking test` workflows: public, database connected, admin auth works, full book → confirm → cancel flow passes (test booking `SW-WBM2`, left Cancelled)
 - [x] Admin dashboard UI (login + bookings table/detail) from `Skywash Dashboard.dc.html`
 - [x] Mobile screens (Expo Router) from `Skywash App.dc.html`: all screens, wired to the API; tested in a web build with the API mocked
 - [x] Mobile: photo placeholders replaced with large icons (package icon on detail and package rows, sparkle on the promo, building on centers); map preview removed — no Maps API key needed. Address comes from typing or "Use my current location" (OS geocoder, no key)
