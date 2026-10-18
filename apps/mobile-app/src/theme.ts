@@ -18,8 +18,6 @@ export const colors = {
   slate100: '#F1F5F9',
   inputBg: '#F8FAFC',
   bg: '#F5F8FB',
-  placeholderImg: '#DCE8F0',
-  placeholderImgDark: '#C9D8E3',
   white: '#FFFFFF',
   star: '#F59E0B',
   errorBg: '#FEF2F2',

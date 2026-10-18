@@ -68,10 +68,10 @@ Never commit `.env` files or real secrets.
 
 ## Deployment (Vercel)
 
-- Project `skywash` in Vercel team `posmo`, root directory `apps/admin-web`, production URL https://skywash-ivory.vercel.app.
-- Not linked to GitHub yet, so deploy from the repo root with the CLI: `VERCEL_ORG_ID=team_Xd2V5hqwwf0JHA0BnjDdBh3V VERCEL_PROJECT_ID=prj_SUZre4yVVPMn75WJryrqpIY87sbC npx vercel deploy --prod` (needs `VERCEL_TOKEN`). `.vercelignore` keeps build output and `node_modules` out of the upload.
-- Cloud sessions can't reach `db.prisma.io` or `*.vercel.app` (network policy). Use the Vercel API (`api.vercel.com`) for build logs and settings.
-- The `VERCEL_TOKEN` also has access to the unrelated Posmo projects in that team. Never touch them.
+- The live project is the owner's `skywash-admin-web` (https://skywash-admin-web.vercel.app), in a Vercel account the session's `VERCEL_TOKEN` can't see. It needs `ADMIN_PASSWORD` and the database URL (`DATABASE_URL` or `DATABASE_POSTGRES_URL`); `vercel-build` applies migrations on each deploy. `.vercelignore` keeps build output and `node_modules` out of CLI uploads.
+- A second project, `skywash` in the `posmo` team, was created by mistake and deleted on 2026-10-18. Don't recreate projects without asking.
+- Cloud sessions can't reach `db.prisma.io` or `*.vercel.app` (network policy).
+- The `VERCEL_TOKEN` in cloud sessions only sees the unrelated Posmo team projects. Never touch them.
 
 ## API contract
 
@@ -122,8 +122,9 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - [x] Prisma schema + initial migration (`20261018000000_init`), seed script
 - [x] API routes, admin auth, CORS
 - [x] Database: Prisma Postgres; migration `20261018000000_init` applied (confirmed in the Vercel build log)
-- [ ] Vercel: project `skywash` (team `posmo`, id `prj_SUZre4yVVPMn75WJryrqpIY87sbC`), production URL https://skywash-ivory.vercel.app, `DATABASE_URL` set. Still to do: add `ADMIN_PASSWORD` on Vercel and redeploy; connect the GitHub repo (Vercel's GitHub app has no access to `SJKings/Skywash-` yet, so deploys are CLI uploads); turn off Vercel Authentication for production before the mobile app goes live (currently `all_except_custom_domains`)
+- [ ] Vercel: `skywash-admin-web` (owner's account). Confirm `ADMIN_PASSWORD` and the database URL are set there; make sure Vercel Authentication doesn't block the production URL before the mobile app goes live
 - [x] Admin dashboard UI (login + bookings table/detail) from `Skywash Dashboard.dc.html`
 - [x] Mobile screens (Expo Router) from `Skywash App.dc.html`: all screens, wired to the API; tested in a web build with the API mocked
-- [ ] Mobile: real photos and map (react-native-maps needs a Maps API key); the "20% off first wash" promo isn't applied anywhere; bell and filter buttons on Home are decorative; test on real devices
+- [x] Mobile: photo placeholders replaced with large icons (package icon on detail and package rows, sparkle on the promo, building on centers); map preview removed — no Maps API key needed. Address comes from typing or "Use my current location" (OS geocoder, no key)
+- [ ] Mobile: the "20% off first wash" promo isn't applied anywhere; bell and filter buttons on Home are decorative; test on real devices
 - [ ] Realtime updates (dashboard + "My booking"), rate limiting on public endpoints

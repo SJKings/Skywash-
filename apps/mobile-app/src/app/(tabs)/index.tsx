@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Bell, ChevronDown, Clock, Image as ImageIcon, MapPin, Search, SlidersHorizontal, Star, Ticket } from 'lucide-react-native';
+import { Bell, ChevronDown, Clock, MapPin, Search, SlidersHorizontal, Sparkles, Star, Ticket } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, ScrollView, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -140,11 +140,8 @@ export default function HomeScreen() {
             Special for you
           </Text>
           <View style={{ height: 160, borderRadius: 20, backgroundColor: colors.ink, overflow: 'hidden' }}>
-            <View style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '48%', backgroundColor: colors.slate800, alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-              <ImageIcon size={22} color={colors.slate600} />
-              <Text size={12} color={colors.slate600}>
-                Photo
-              </Text>
+            <View style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '48%', backgroundColor: colors.slate800, alignItems: 'center', justifyContent: 'center', paddingBottom: 30 }}>
+              <Sparkles size={76} color={colors.brand} strokeWidth={1.5} />
             </View>
             <View style={{ flex: 1, padding: 16, justifyContent: 'space-between' }}>
               <View style={{ alignSelf: 'flex-start', backgroundColor: colors.white, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 }}>
@@ -225,8 +222,8 @@ export default function HomeScreen() {
                 onPress={() => openPackage(p.id)}
                 style={{ flexDirection: 'row', gap: 14, alignItems: 'center', backgroundColor: colors.white, borderRadius: 18, padding: 10 }}
               >
-                <View style={{ width: 76, height: 76, borderRadius: 14, backgroundColor: colors.placeholderImg, alignItems: 'center', justifyContent: 'center' }}>
-                  <Icon size={22} color={colors.slate400} />
+                <View style={{ width: 76, height: 76, borderRadius: 14, backgroundColor: colors.sky100, alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon size={38} color={colors.brandIcon} strokeWidth={1.75} />
                 </View>
                 <View style={{ flex: 1, gap: 4 }}>
                   <Text weight={700}>{p.name}</Text>

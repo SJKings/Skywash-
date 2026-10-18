@@ -1,6 +1,6 @@
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
-import { Building2, Info, LocateFixed, MapPin } from 'lucide-react-native';
+import { Building2, Info, LocateFixed } from 'lucide-react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { FlowScreen } from '@/components/FlowScreen';
@@ -50,13 +50,6 @@ function AddressForm() {
       <Text size={23} weight={800}>
         {pickup ? 'Where should we pick up your car?' : 'Where should we come?'}
       </Text>
-      {/* Map placeholder, as in the design. A real map needs a Maps API key. */}
-      <View style={{ height: 170, borderRadius: 18, backgroundColor: colors.placeholderImg, alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-        <MapPin size={34} color={colors.brand} />
-        <Text size={12} color={colors.slate500}>
-          Map preview
-        </Text>
-      </View>
       <Button
         variant="soft"
         icon={LocateFixed}
@@ -121,8 +114,8 @@ function CenterList() {
               borderColor: selected ? colors.brand : colors.slate200,
             }}
           >
-            <View style={{ width: 64, height: 64, borderRadius: 14, backgroundColor: colors.placeholderImg, alignItems: 'center', justifyContent: 'center' }}>
-              <Building2 size={20} color={colors.slate400} />
+            <View style={{ width: 64, height: 64, borderRadius: 14, backgroundColor: colors.sky100, alignItems: 'center', justifyContent: 'center' }}>
+              <Building2 size={32} color={colors.brandIcon} strokeWidth={1.75} />
             </View>
             <View style={{ flex: 1, gap: 3 }}>
               <Text weight={700}>{c.name}</Text>

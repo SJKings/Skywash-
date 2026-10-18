@@ -1,8 +1,8 @@
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
-import { ArrowLeft, Check, Clock, Image as ImageIcon, MapPin, Share2, Star } from 'lucide-react-native';
+import { ArrowLeft, Check, Clock, MapPin, Share2, Star } from 'lucide-react-native';
 import { ScrollView, Share, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { packageFromSlug } from '@/components/PackageIcon';
+import { PACKAGE_ICONS, packageFromSlug } from '@/components/PackageIcon';
 import { Text } from '@/components/Text';
 import { BottomBar, Button, Tappable, useStatusBar } from '@/components/ui';
 import { useBookingFlow } from '@/lib/booking-flow';
@@ -30,15 +30,15 @@ export default function ServiceDetailScreen() {
   const washType = packageFromSlug(id ?? '');
   if (!washType) return <Redirect href="/" />;
   const pkg = getPackage(washType);
+  const Icon = PACKAGE_ICONS[washType];
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 130 }}>
-        <View style={{ height: 330, backgroundColor: colors.placeholderImgDark, alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-          <ImageIcon size={30} color={colors.slate500} />
-          <Text size={13} color={colors.slate500}>
-            Service photo
-          </Text>
+        <View style={{ height: 330, backgroundColor: colors.sky100, alignItems: 'center', justifyContent: 'center', paddingTop: insets.top }}>
+          <View style={{ width: 184, height: 184, borderRadius: 92, backgroundColor: colors.sky200, alignItems: 'center', justifyContent: 'center' }}>
+            <Icon size={96} color={colors.brandIcon} strokeWidth={1.6} />
+          </View>
           <View style={{ position: 'absolute', top: insets.top + 8, left: GUTTER, right: GUTTER, flexDirection: 'row', justifyContent: 'space-between' }}>
             <RoundButton label="Back" onPress={() => router.back()}>
               <ArrowLeft size={20} color={colors.ink} />
