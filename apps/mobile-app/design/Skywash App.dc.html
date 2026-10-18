@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-0b13fbf5-2171-4f83-98b5-7c2cadfe7067/styles.css">
+<script src="_ds/modernist-0b13fbf5-2171-4f83-98b5-7c2cadfe7067/_ds_bundle.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/lucide-static@0.460.0/font/lucide.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&amp;display=swap">
+<style>body{margin:0;background:#E9F0F5;font-family:'Archivo',sans-serif;color:#0F172A}*{box-sizing:border-box}input,button{font-family:inherit}input:focus{outline:none}:focus-visible{outline:2px solid #0EA5E9;outline-offset:2px}a{color:#0369A1}a:hover{color:#0EA5E9}::-webkit-scrollbar{display:none}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-wrap:wrap;gap:56px;align-items:center;justify-content:center;padding:40px 24px">
+  <div style="max-width:300px;display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:10px;background:#0EA5E9;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px"><i class="icon-droplets"></i></div><span style="font-weight:800;font-size:20px">Skywash</span></div>
+    <h1 style="margin:0;font-size:30px;line-height:1.1;font-weight:800;text-wrap:pretty">Customer app</h1>
+    <p style="margin:0;font-size:15px;line-height:1.5;color:#475569;text-wrap:pretty">No account needed. Book a wash, get a code, use the code to check your booking. Try code <b style="color:#0369A1">SW-4FQ2</b>.</p>
+    <a href="Skywash Dashboard.dc.html" target="_blank" style="font-weight:600;font-size:15px;display:flex;align-items:center;gap:6px">Open the bookings dashboard <i class="icon-arrow-up-right"></i></a>
+  </div>
+
+  <div style="width:390px;height:844px;flex-shrink:0;border-radius:58px;background:#0B0F14;padding:12px;box-shadow:0 30px 70px rgba(15,23,42,.28)">
+    <div style="position:relative;width:100%;height:100%;border-radius:46px;overflow:hidden;background:#F5F8FB">
+      <div style="position:absolute;top:11px;left:50%;transform:translateX(-50%);width:118px;height:34px;border-radius:20px;background:#000;z-index:40"></div>
+      <div style="position:absolute;top:0;left:0;right:0;height:54px;display:flex;justify-content:space-between;align-items:center;padding:4px 30px 0;z-index:30;color:{{ statusColor }};font-weight:600;font-size:15px;pointer-events:none"><span>9:41</span><span style="display:flex;gap:6px;font-size:15px"><i class="icon-signal"></i><i class="icon-wifi"></i><i class="icon-battery-full"></i></span></div>
+
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;padding-bottom:110px">
+          <div style="background:#0EA5E9;padding:62px 20px 26px;border-radius:0 0 28px 28px;display:flex;flex-direction:column;gap:18px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <span style="font-size:13px;color:#E0F2FE">Location</span>
+                <span style="display:flex;align-items:center;gap:6px;color:#fff;font-weight:600;font-size:17px"><i class="icon-map-pin"></i>San Diego, CA<i class="icon-chevron-down" style="font-size:14px"></i></span>
+              </div>
+              <div style="width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px"><i class="icon-bell"></i></div>
+            </div>
+            <div style="display:flex;gap:10px">
+              <div style="flex:1;height:48px;border-radius:14px;background:#fff;display:flex;align-items:center;gap:10px;padding:0 14px;color:#94A3B8"><i class="icon-search" style="font-size:18px"></i><span style="font-size:15px">Search services</span></div>
+              <div style="width:48px;height:48px;border-radius:14px;background:#fff;color:#0284C7;display:flex;align-items:center;justify-content:center;font-size:18px"><i class="icon-sliders-horizontal"></i></div>
+            </div>
+          </div>
+
+          <div style="padding:20px;display:flex;flex-direction:column;gap:26px">
+            <div style="background:#fff;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 6px 20px rgba(14,165,233,.10)">
+              <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px"><i class="icon-ticket" style="color:#0EA5E9"></i>Already booked?</div>
+              <div style="display:flex;gap:8px">
+                <input value="{{ lookup }}" onChange="{{ onLookup }}" placeholder="Enter booking code" style="flex:1;min-width:0;height:46px;border-radius:12px;border:1.5px solid #E2E8F0;padding:0 14px;font-size:15px;text-transform:uppercase;letter-spacing:.04em;background:#F8FAFC">
+                <button onClick="{{ findFromHome }}" style="height:46px;padding:0 18px;border:0;border-radius:12px;background:#0F172A;color:#fff;font-weight:600;font-size:15px;cursor:pointer">Find</button>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-weight:700;font-size:19px">Special for you</span></div>
+              <div style="position:relative;height:160px;border-radius:20px;background:#0F172A;overflow:hidden;display:flex">
+                <div style="position:absolute;right:0;top:0;bottom:0;width:48%;background:#1E293B;display:flex;align-items:center;justify-content:center;color:#475569;font-size:12px;flex-direction:column;gap:6px"><i class="icon-image" style="font-size:22px"></i>Photo</div>
+                <div style="position:relative;padding:16px;display:flex;flex-direction:column;gap:6px;justify-content:space-between;width:100%">
+                  <span style="align-self:flex-start;background:#fff;color:#0F172A;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px">Limited time</span>
+                  <div style="display:flex;flex-direction:column;gap:2px;color:#fff"><span style="font-weight:700;font-size:18px">First wash</span><span style="font-size:40px;font-weight:800;line-height:1">20% off</span></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center"><span style="color:#94A3B8;font-size:11px">All services · Home or center</span><button onClick="{{ openFull }}" style="border:0;background:#0EA5E9;color:#fff;font-weight:600;font-size:13px;padding:8px 16px;border-radius:20px;cursor:pointer">Claim</button></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <span style="font-weight:700;font-size:19px">Services</span>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+                <sc-for list="{{ pkgs }}" as="p" hint-placeholder-count="4">
+                  <div onClick="{{ p.open }}" style="display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer">
+                    <div style="width:64px;height:64px;border-radius:50%;background:#E0F2FE;color:#0284C7;display:flex;align-items:center;justify-content:center;font-size:26px"><i class="{{ p.icon }}"></i></div>
+                    <span style="font-size:12px;color:#334155;text-align:center">{{ p.short }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <span style="font-weight:700;font-size:19px">Popular packages</span>
+              <sc-for list="{{ pkgs }}" as="p" hint-placeholder-count="3">
+                <div onClick="{{ p.open }}" style="display:flex;gap:14px;align-items:center;background:#fff;border-radius:18px;padding:10px;cursor:pointer">
+                  <div style="width:76px;height:76px;border-radius:14px;background:#DCE8F0;color:#94A3B8;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0"><i class="{{ p.icon }}"></i></div>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:4px;min-width:0">
+                    <span style="font-weight:700;font-size:15px">{{ p.name }}</span>
+                    <span style="font-size:13px;color:#64748B;display:flex;gap:10px"><span style="display:flex;align-items:center;gap:4px"><i class="icon-star" style="color:#F59E0B"></i>{{ p.rating }}</span><span style="display:flex;align-items:center;gap:4px"><i class="icon-clock"></i>{{ p.dur }}</span></span>
+                  </div>
+                  <span style="font-weight:700;font-size:16px;color:#0369A1;padding-right:6px">${{ p.price }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isFind }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;padding:66px 20px 120px;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-direction:column;gap:6px"><span style="font-weight:800;font-size:26px">Find my booking</span><span style="font-size:14px;color:#64748B;line-height:1.45">Enter the code you received when you booked.</span></div>
+          <div style="display:flex;gap:8px">
+            <input value="{{ lookup }}" onChange="{{ onLookup }}" placeholder="SW-XXXX" style="flex:1;min-width:0;height:52px;border-radius:14px;border:1.5px solid #CBD5E1;padding:0 16px;font-size:17px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;background:#fff">
+            <button onClick="{{ doFind }}" style="height:52px;padding:0 20px;border:0;border-radius:14px;background:#0EA5E9;color:#fff;font-weight:600;font-size:15px;cursor:pointer">Find</button>
+          </div>
+          <sc-if value="{{ notFound }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#FEF2F2;color:#991B1B;border-radius:14px;padding:14px;font-size:14px;display:flex;gap:8px;align-items:center"><i class="icon-circle-alert"></i>No booking found for that code. Check it and try again.</div>
+          </sc-if>
+          <sc-if value="{{ hasResult }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#fff;border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:800;font-size:20px;letter-spacing:.06em">{{ r.code }}</span><span style="font-size:12px;font-weight:600;padding:5px 10px;border-radius:20px;background:{{ r.statusBg }};color:{{ r.statusColor }}">{{ r.statusLabel }}</span></div>
+              <div style="display:flex;flex-direction:column;gap:0">
+                <sc-for list="{{ r.steps }}" as="s" hint-placeholder-count="4">
+                  <div style="display:flex;gap:12px;align-items:stretch">
+                    <div style="display:flex;flex-direction:column;align-items:center;width:20px"><div style="width:20px;height:20px;border-radius:50%;background:{{ s.dot }};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0"><i class="icon-check"></i></div><div style="flex:1;width:2px;min-height:14px;background:{{ s.line }}"></div></div>
+                    <span style="font-size:14px;padding-bottom:14px;color:{{ s.text }};font-weight:{{ s.weight }}">{{ s.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="height:1px;background:#E2E8F0"></div>
+              <div style="display:flex;flex-direction:column;gap:10px;font-size:14px">
+                <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:#64748B">Service</span><span style="font-weight:600;text-align:right">{{ r.pkgName }}</span></div>
+                <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:#64748B">Type</span><span style="font-weight:600;text-align:right">{{ r.modeLabel }}</span></div>
+                <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:#64748B">When</span><span style="font-weight:600;text-align:right">{{ r.when }}</span></div>
+                <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:#64748B">{{ r.whereLabel }}</span><span style="font-weight:600;text-align:right">{{ r.where }}</span></div>
+                <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:#64748B">Total</span><span style="font-weight:700;color:#0369A1">${{ r.total }}</span></div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
+        <div style="position:absolute;left:0;right:0;bottom:0;height:88px;background:#fff;border-top:1px solid #E2E8F0;display:flex;justify-content:space-around;padding:10px 20px 0;z-index:20">
+          <div onClick="{{ goHome }}" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ navHome }};font-size:12px;font-weight:600;cursor:pointer;min-width:64px"><i class="icon-house" style="font-size:22px"></i>Home</div>
+          <div onClick="{{ startBooking }}" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#94A3B8;font-size:12px;font-weight:600;cursor:pointer;min-width:64px"><i class="icon-calendar-plus" style="font-size:22px"></i>Book</div>
+          <div onClick="{{ goFind }}" style="display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ navFind }};font-size:12px;font-weight:600;cursor:pointer;min-width:64px"><i class="icon-ticket" style="font-size:22px"></i>My booking</div>
+        </div>
+        <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:#0F172A;z-index:21"></div>
+      </sc-if>
+
+      <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;padding-bottom:120px">
+          <div style="position:relative;height:330px;background:#C9D8E3;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#64748B;font-size:13px">
+            <i class="icon-image" style="font-size:30px"></i>Service photo
+            <div onClick="{{ goHome }}" style="position:absolute;top:60px;left:20px;width:44px;height:44px;border-radius:50%;background:#fff;color:#0F172A;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer"><i class="icon-arrow-left"></i></div>
+            <div style="position:absolute;top:60px;right:20px;width:44px;height:44px;border-radius:50%;background:#fff;color:#0F172A;display:flex;align-items:center;justify-content:center;font-size:18px"><i class="icon-share-2"></i></div>
+          </div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:18px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="background:#E0F2FE;color:#0369A1;font-size:13px;font-weight:600;padding:6px 10px;border-radius:8px">Car washing</span><span style="font-size:13px;color:#64748B;display:flex;align-items:center;gap:4px"><i class="icon-star" style="color:#F59E0B"></i>{{ pkg.rating }} ({{ pkg.reviews }} reviews)</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-weight:800;font-size:26px">{{ pkg.name }}</span><span style="font-size:14px;color:#64748B;display:flex;gap:14px"><span style="display:flex;align-items:center;gap:5px"><i class="icon-clock"></i>{{ pkg.dur }}</span><span style="display:flex;align-items:center;gap:5px"><i class="icon-map-pin"></i>At home or at a center</span></span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-weight:700;font-size:16px">About</span><p style="margin:0;font-size:14px;line-height:1.55;color:#475569;text-wrap:pretty">{{ pkg.desc }}</p></div>
+            <div style="display:flex;flex-direction:column;gap:10px"><span style="font-weight:700;font-size:16px">What's included</span>
+              <sc-for list="{{ pkg.inc }}" as="x" hint-placeholder-count="4"><div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#334155"><span style="width:22px;height:22px;border-radius:50%;background:#E0F2FE;color:#0284C7;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0"><i class="icon-check"></i></span>{{ x }}</div></sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;padding:14px 20px 34px;display:flex;gap:14px;align-items:center;box-shadow:0 -6px 20px rgba(15,23,42,.06)">
+          <div style="display:flex;flex-direction:column"><span style="font-size:12px;color:#64748B">From</span><span style="font-weight:800;font-size:22px">${{ pkg.price }}</span></div>
+          <button onClick="{{ startBooking }}" style="flex:1;height:54px;border:0;border-radius:16px;background:#0EA5E9;color:#fff;font-weight:700;font-size:16px;cursor:pointer">Book service now</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ inFlow }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;top:0;left:0;right:0;padding:58px 20px 14px;background:#F5F8FB;z-index:10;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div onClick="{{ back }}" style="width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;cursor:pointer;flex-shrink:0"><i class="icon-arrow-left"></i></div>
+            <div style="flex:1;display:flex;flex-direction:column"><span style="font-weight:700;font-size:17px">{{ flowTitle }}</span><span style="font-size:12px;color:#64748B">{{ pkg.name }} · Step {{ stepNum }} of 4</span></div>
+          </div>
+          <div style="height:5px;border-radius:3px;background:#E2E8F0;overflow:hidden"><div style="height:100%;width:{{ progress }};background:#0EA5E9;border-radius:3px"></div></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isType }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;padding:150px 20px 120px;display:flex;flex-direction:column;gap:14px">
+          <span style="font-weight:800;font-size:23px">Where should we wash your car?</span>
+          <div onClick="{{ pickHome }}" style="display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:18px;background:#fff;border:2px solid {{ o.homeB }};cursor:pointer">
+            <div style="width:48px;height:48px;border-radius:14px;background:#E0F2FE;color:#0284C7;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0"><i class="icon-house"></i></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:4px"><div style="display:flex;justify-content:space-between"><span style="font-weight:700;font-size:16px">Home service</span><span style="font-size:13px;color:#0369A1;font-weight:600">+$10</span></div><span style="font-size:13px;color:#64748B;line-height:1.45">Our team comes to your home or office with water and power.</span></div>
+          </div>
+          <div onClick="{{ pickCenter }}" style="display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:18px;background:#fff;border:2px solid {{ o.centerB }};cursor:pointer">
+            <div style="width:48px;height:48px;border-radius:14px;background:#E0F2FE;color:#0284C7;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0"><i class="icon-building-2"></i></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:4px"><span style="font-weight:700;font-size:16px">Car center</span><span style="font-size:13px;color:#64748B;line-height:1.45">Washed at one of our centers. We can collect it, or you drive in.</span></div>
+          </div>
+          <sc-if value="{{ isCenter }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:10px;padding-top:8px">
+              <span style="font-weight:700;font-size:16px">How does your car get there?</span>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <div onClick="{{ pickPickup }}" style="padding:14px;border-radius:16px;background:{{ o.pickupBg }};border:2px solid {{ o.pickupB }};display:flex;flex-direction:column;gap:8px;cursor:pointer">
+                  <i class="icon-truck" style="font-size:22px;color:#0284C7"></i><span style="font-weight:700;font-size:15px">Pickup &amp; return</span><span style="font-size:12px;color:#64748B;line-height:1.4">We collect and bring it back. +$15</span>
+                </div>
+                <div onClick="{{ pickSelf }}" style="padding:14px;border-radius:16px;background:{{ o.selfBg }};border:2px solid {{ o.selfB }};display:flex;flex-direction:column;gap:8px;cursor:pointer">
+                  <i class="icon-car-front" style="font-size:22px;color:#0284C7"></i><span style="font-weight:700;font-size:15px">I'll drive in</span><span style="font-size:12px;color:#64748B;line-height:1.4">Bring it to a center at your time.</span>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isLocAddr }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;padding:150px 20px 120px;display:flex;flex-direction:column;gap:14px">
+          <span style="font-weight:800;font-size:23px">{{ addrTitle }}</span>
+          <div style="height:170px;border-radius:18px;background-color:#DCE8F0;background-image:linear-gradient(#CFDDE8 1px,transparent 1px),linear-gradient(90deg,#CFDDE8 1px,transparent 1px);background-size:28px 28px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px"><i class="icon-map-pin" style="font-size:34px;color:#0EA5E9"></i><span style="font-size:12px;color:#64748B">Map preview</span></div>
+          <button onClick="{{ useCurrent }}" style="height:46px;border-radius:14px;border:1.5px solid #BAE6FD;background:#F0F9FF;color:#0369A1;font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px;padding:0 14px;cursor:pointer"><i class="icon-locate-fixed"></i>Use my current location</button>
+          <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600;color:#334155">Address</span><input value="{{ address }}" onChange="{{ onAddress }}" placeholder="Street, number, city" style="height:50px;border-radius:14px;border:1.5px solid #E2E8F0;padding:0 14px;font-size:15px;background:#fff"></div>
+          <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600;color:#334155">Directions for our team (optional)</span><input value="{{ notes }}" onChange="{{ onNotes }}" placeholder="Gate code, parking spot, where keys are" style="height:50px;border-radius:14px;border:1.5px solid #E2E8F0;padding:0 14px;font-size:15px;background:#fff"></div>
+          <span style="font-size:13px;color:#64748B;line-height:1.45;display:flex;gap:8px"><i class="icon-info" style="margin-top:2px"></i>{{ addrHint }}</span>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isLocCenter }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;padding:150px 20px 120px;display:flex;flex-direction:column;gap:12px">
+          <span style="font-weight:800;font-size:23px">Choose a center</span>
+          <sc-for list="{{ centers }}" as="c" hint-placeholder-count="3">
+            <div onClick="{{ c.pick }}" style="display:flex;gap:12px;align-items:center;padding:12px;border-radius:18px;background:#fff;border:2px solid {{ c.border }};cursor:pointer">
+              <div style="width:64px;height:64px;border-radius:14px;background:#DCE8F0;color:#94A3B8;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0"><i class="icon-building-2"></i></div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font-weight:700;font-size:15px">{{ c.name }}</span><span style="font-size:13px;color:#64748B">{{ c.addr }}</span><span style="font-size:12px;color:#0369A1;font-weight:600">{{ c.dist }} · Open {{ c.hours }}</span></div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isSched }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;padding:150px 20px 120px;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;flex-direction:column;gap:10px"><span style="font-weight:700;font-size:16px">Date</span>
+            <div style="display:flex;gap:8px;overflow-x:auto">
+              <sc-for list="{{ dates }}" as="d" hint-placeholder-count="6">
+                <div onClick="{{ d.pick }}" style="min-width:56px;padding:10px 0;border-radius:14px;background:{{ d.bg }};color:{{ d.color }};display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0"><span style="font-size:12px">{{ d.dow }}</span><span style="font-size:19px;font-weight:700">{{ d.day }}</span></div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px"><span style="font-weight:700;font-size:16px">{{ timeTitle }}</span>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+              <sc-for list="{{ times }}" as="t" hint-placeholder-count="6">
+                <div onClick="{{ t.pick }}" style="height:42px;border-radius:12px;background:{{ t.bg }};color:{{ t.color }};border:1.5px solid {{ t.border }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;cursor:pointer">{{ t.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px"><span style="font-weight:700;font-size:16px">Vehicle</span>
+            <div style="display:flex;gap:6px;padding:4px;background:#E2E8F0;border-radius:14px">
+              <sc-for list="{{ vehicles }}" as="v" hint-placeholder-count="4">
+                <div onClick="{{ v.pick }}" style="flex:1;height:38px;border-radius:10px;background:{{ v.bg }};color:{{ v.color }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer">{{ v.name }}</div>
+              </sc-for>
+            </div>
+            <input value="{{ plate }}" onChange="{{ onPlate }}" placeholder="Plate number" style="height:50px;border-radius:14px;border:1.5px solid #E2E8F0;padding:0 14px;font-size:15px;background:#fff;text-transform:uppercase">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px"><span style="font-weight:700;font-size:16px">Contact</span>
+            <input value="{{ name }}" onChange="{{ onName }}" placeholder="Your name" style="height:50px;border-radius:14px;border:1.5px solid #E2E8F0;padding:0 14px;font-size:15px;background:#fff">
+            <input value="{{ phone }}" onChange="{{ onPhone }}" placeholder="Phone number" type="tel" style="height:50px;border-radius:14px;border:1.5px solid #E2E8F0;padding:0 14px;font-size:15px;background:#fff">
+            <span style="font-size:12px;color:#64748B">Used only to reach you about this booking. No account is created.</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isReview }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;padding:150px 20px 120px;display:flex;flex-direction:column;gap:14px">
+          <span style="font-weight:800;font-size:23px">Review your booking</span>
+          <div style="background:#fff;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px;font-size:14px">
+            <sc-for list="{{ summary }}" as="s" hint-placeholder-count="6">
+              <div style="display:flex;gap:12px;align-items:flex-start"><span style="width:34px;height:34px;border-radius:10px;background:#F0F9FF;color:#0284C7;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="{{ s.icon }}"></i></span><div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:12px;color:#64748B">{{ s.label }}</span><span style="font-weight:600;line-height:1.35">{{ s.value }}</span></div></div>
+            </sc-for>
+          </div>
+          <div style="background:#fff;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px;font-size:14px">
+            <div style="display:flex;justify-content:space-between"><span style="color:#64748B">{{ pkg.name }}</span><span>${{ pkg.price }}</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:#64748B">{{ feeLabel }}</span><span>${{ fee }}</span></div>
+            <div style="height:1px;background:#E2E8F0"></div>
+            <div style="display:flex;justify-content:space-between;font-weight:800;font-size:17px"><span>Total</span><span style="color:#0369A1">${{ total }}</span></div>
+            <span style="font-size:12px;color:#64748B">Pay on completion. Cash or card.</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ inFlowCta }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;padding:14px 20px 34px;box-shadow:0 -6px 20px rgba(15,23,42,.06);z-index:10">
+          <button onClick="{{ next }}" style="width:100%;height:54px;border:0;border-radius:16px;background:#0EA5E9;color:#fff;font-weight:700;font-size:16px;cursor:pointer;opacity:{{ ctaOpacity }}">{{ ctaLabel }}</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;padding:90px 24px 40px;display:flex;flex-direction:column;gap:22px;background:#0EA5E9;color:#fff">
+          <div style="width:64px;height:64px;border-radius:50%;background:#fff;color:#0EA5E9;display:flex;align-items:center;justify-content:center;font-size:30px"><i class="icon-check"></i></div>
+          <div style="display:flex;flex-direction:column;gap:8px"><span style="font-weight:800;font-size:30px;line-height:1.1">Booking received</span><span style="font-size:15px;line-height:1.5;color:#E0F2FE">Save this code. It's the only way to find your booking.</span></div>
+          <div style="background:#fff;color:#0F172A;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px">
+            <span style="font-size:13px;color:#64748B">Your booking code</span>
+            <span style="font-weight:800;font-size:40px;letter-spacing:.1em">{{ code }}</span>
+            <button onClick="{{ copyCode }}" style="height:46px;border-radius:12px;border:1.5px solid #BAE6FD;background:#F0F9FF;color:#0369A1;font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px;padding:0 14px;cursor:pointer"><i class="icon-copy"></i>{{ copyLabel }}</button>
+            <div style="height:1px;background:#E2E8F0"></div>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:14px"><span style="font-weight:600">{{ pkg.name }} · {{ modeLabel }}</span><span style="color:#64748B">{{ whenLabel }}</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:auto">
+            <button onClick="{{ trackNew }}" style="height:54px;border:0;border-radius:16px;background:#0F172A;color:#fff;font-weight:700;font-size:16px;cursor:pointer">Track this booking</button>
+            <button onClick="{{ goHome }}" style="height:54px;border:2px solid #fff;border-radius:16px;background:transparent;color:#fff;font-weight:700;font-size:16px;cursor:pointer">Back to home</button>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const PKGS=[
+{id:'ext',name:'Exterior Wash',short:'Exterior',icon:'icon-spray-can',price:25,dur:'45 min',rating:'4.8',reviews:'412',desc:'A full hand wash for the outside of your car, finished with a streak-free dry.',inc:['Foam pre-wash and hand wash','Wheels, rims and tyre shine','Exterior windows and mirrors','Microfibre hand dry']},
+{id:'int',name:'Interior Clean',short:'Interior',icon:'icon-armchair',price:35,dur:'1 hr',rating:'4.7',reviews:'286',desc:'Vacuum, wipe-down and glass clean for the whole cabin, boot included.',inc:['Vacuum seats, mats and boot','Dashboard and console wipe-down','Interior glass','Odour neutraliser']},
+{id:'full',name:'Full Detail',short:'Full detail',icon:'icon-sparkles',price:89,dur:'2.5 hrs',rating:'4.9',reviews:'365',desc:'Our complete inside-and-out treatment with clay bar and a hand-applied wax.',inc:['Everything in Exterior and Interior','Clay bar decontamination','Hand wax and polish','Seat conditioning']},
+{id:'eng',name:'Engine Bay',short:'Engine bay',icon:'icon-cog',price:45,dur:'40 min',rating:'4.6',reviews:'98',desc:'Safe degrease and dress of the engine bay, with sensitive parts covered.',inc:['Electrical parts covered','Degrease and low-pressure rinse','Plastics and hoses dressed','Final dry and inspection']}];
+const CENTERS=[{id:'c1',name:'Skywash Mission Bay',addr:'1200 Garnet Ave, San Diego',dist:'1.2 mi',hours:'7am–8pm'},{id:'c2',name:'Skywash North Park',addr:'3015 University Ave, San Diego',dist:'2.8 mi',hours:'7am–7pm'},{id:'c3',name:'Skywash Chula Vista',addr:'455 Broadway, Chula Vista',dist:'7.4 mi',hours:'8am–6pm'}];
+const TIMES=['08:00','09:30','11:00','12:30','14:00','15:30','17:00'];
+const VEH=['Sedan','SUV','Hatchback','Truck'];
+const fmtT=t=>{let [h,m]=t.split(':').map(Number);const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+String(m).padStart(2,'0')+' '+ap;};
+const iso=n=>{const x=new Date();x.setDate(x.getDate()+n);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');};
+const fmtD=s=>{const [y,m,d]=s.split('-').map(Number);const x=new Date(y,m-1,d);if(s===iso(0))return 'Today';if(s===iso(1))return 'Tomorrow';return x.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});};
+const SEED=[{code:'SW-4FQ2',pkgName:'Full Detail',mode:'home',address:'2241 Felspar St, San Diego, CA',center:'',date:iso(0),time:'09:30',total:99,status:'confirmed'}];
+const MODE={home:'Home service',pickup:'Center · pickup & return',self:'Center · drive in'};
+const ST={new:['Received','#E0F2FE','#0369A1'],confirmed:['Confirmed','#E2E8F0','#334155'],in_progress:['In progress','#FEF3C7','#92400E'],completed:['Completed','#DCFCE7','#166534'],cancelled:['Cancelled','#FEE2E2','#991B1B']};
+const read=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
+
+class Component extends DCLogic {
+  state={screen:'home',pkg:'full',mode:null,how:null,address:'',notes:'',centerId:null,dateIdx:0,time:null,vehicle:'Sedan',plate:'',name:'',phone:'',code:null,lookup:'',result:null,searched:false,copied:false};
+  kind(){const s=this.state;return s.mode==='home'?'home':s.mode==='center'?s.how:null;}
+  find(raw){
+    let c=(raw||'').trim().toUpperCase().replace(/\s/g,'');if(c&&!c.startsWith('SW-'))c='SW-'+c.replace(/^SW/,'');
+    const all=[...(read('skywash.bookings')||[]),...SEED];const st=read('skywash.status')||{};
+    const b=all.find(x=>x.code===c);this.setState({screen:'find',lookup:c,searched:true,result:b?{...b,status:st[b.code]||b.status}:null});
+  }
+  renderVals(){
+    const s=this.state,set=o=>this.setState(o),go=sc=>set({screen:sc});
+    const pkg=PKGS.find(p=>p.id===s.pkg),k=this.kind();
+    const fee=k==='home'?10:k==='pickup'?15:0,total=pkg.price+fee;
+    const dates=[0,1,2,3,4,5].map(i=>{const x=new Date();x.setDate(x.getDate()+i);const on=s.dateIdx===i;return{dow:i===0?'Today':x.toLocaleDateString('en-US',{weekday:'short'}),day:x.getDate(),bg:on?'#0EA5E9':'#fff',color:on?'#fff':'#0F172A',pick:()=>set({dateIdx:i})};});
+    const center=CENTERS.find(c=>c.id===s.centerId);
+    const whenLabel=fmtD(iso(s.dateIdx))+(s.time?' · '+fmtT(s.time):'');
+    const order=['home','detail','type','loc','sched','review'];
+    const canNext={type:!!k,loc:k==='self'?!!s.centerId:s.address.trim().length>3,sched:!!s.time&&s.name.trim()&&s.phone.trim(),review:true}[s.screen];
+    const stepNum={type:1,loc:2,sched:3,review:4}[s.screen]||1;
+    const sel=(on)=>on?'#0EA5E9':'#E2E8F0';
+    const confirm=()=>{
+      const A='ABCDEFGHJKMNPQRSTUVWXYZ23456789';let code='SW-';for(let i=0;i<4;i++)code+=A[Math.floor(Math.random()*A.length)];
+      const b={code,pkgId:pkg.id,pkgName:pkg.name,mode:k,address:k==='self'?'':s.address,notes:k==='self'?'':s.notes,center:center?center.name:(k==='pickup'?'Nearest center':''),date:iso(s.dateIdx),time:s.time,vehicle:s.vehicle,plate:s.plate.toUpperCase(),name:s.name,phone:s.phone,total,status:'new',createdAt:Date.now()};
+      const list=read('skywash.bookings')||[];list.unshift(b);localStorage.setItem('skywash.bookings',JSON.stringify(list));
+      set({screen:'done',code,copied:false});
+    };
+    const next=()=>{if(!canNext)return;if(s.screen==='review')return confirm();go(order[order.indexOf(s.screen)+1]);};
+    const r=s.result;let rv={};
+    if(r){const [lab,bg,col]=ST[r.status]||ST.new;const idx={new:0,confirmed:1,in_progress:2,completed:3}[r.status]??-1;
+      const labels=['Booking received','Confirmed by our team',r.mode==='pickup'?'Picked up · washing':r.mode==='home'?'Team on site · washing':'Washing',r.mode==='pickup'?'Returned':'Done'];
+      rv={...r,statusLabel:lab,statusBg:bg,statusColor:col,modeLabel:MODE[r.mode],when:fmtD(r.date)+' · '+fmtT(r.time),whereLabel:r.mode==='self'?'Center':r.mode==='pickup'?'Pickup from':'Address',where:r.mode==='self'?r.center:r.address,
+        steps:labels.map((l,i)=>({label:l,dot:i<=idx?'#0EA5E9':'#CBD5E1',line:i===3?'transparent':(i<idx?'#0EA5E9':'#E2E8F0'),text:i<=idx?'#0F172A':'#94A3B8',weight:i===idx?700:500}))};}
+    const sc=s.screen,flow=['type','loc','sched','review'].includes(sc);
+    return {
+      statusColor:(sc==='home'||sc==='done')?'#fff':'#0F172A',
+      isHome:sc==='home',isFind:sc==='find',isDetail:sc==='detail',isType:sc==='type',isCenter:s.mode==='center',
+      isLocAddr:sc==='loc'&&k!=='self',isLocCenter:sc==='loc'&&k==='self',isSched:sc==='sched',isReview:sc==='review',isDone:sc==='done',
+      inFlow:flow,inFlowCta:flow,showNav:sc==='home'||sc==='find',
+      navHome:sc==='home'?'#0EA5E9':'#94A3B8',navFind:sc==='find'?'#0EA5E9':'#94A3B8',
+      pkgs:PKGS.map(p=>({...p,open:()=>set({pkg:p.id,screen:'detail'})})),pkg,
+      openFull:()=>set({pkg:'full',screen:'detail'}),
+      goHome:()=>go('home'),goFind:()=>set({screen:'find'}),
+      startBooking:()=>go('type'),
+      back:()=>go(order[order.indexOf(sc)-1]),
+      lookup:s.lookup,onLookup:e=>set({lookup:e.target.value}),findFromHome:()=>this.find(s.lookup),doFind:()=>this.find(s.lookup),
+      notFound:s.searched&&!r,hasResult:!!r,r:rv,
+      flowTitle:{type:'Service type',loc:k==='self'?'Center':'Location',sched:'Time & details',review:'Review'}[sc]||'',
+      stepNum,progress:(stepNum*25)+'%',
+      o:{homeB:sel(s.mode==='home'),centerB:sel(s.mode==='center'),pickupB:sel(s.how==='pickup'),selfB:sel(s.how==='self'),pickupBg:s.how==='pickup'?'#F0F9FF':'#fff',selfBg:s.how==='self'?'#F0F9FF':'#fff'},
+      pickHome:()=>set({mode:'home'}),pickCenter:()=>set({mode:'center'}),pickPickup:()=>set({how:'pickup'}),pickSelf:()=>set({how:'self'}),
+      addrTitle:k==='pickup'?'Where should we pick up your car?':'Where should we come?',
+      addrHint:k==='pickup'?'We return the car to this same address when the wash is done.':'Make sure there is room for our van next to the car.',
+      address:s.address,onAddress:e=>set({address:e.target.value}),notes:s.notes,onNotes:e=>set({notes:e.target.value}),
+      useCurrent:()=>set({address:'2241 Felspar St, San Diego, CA 92109'}),
+      centers:CENTERS.map(c=>({...c,border:sel(s.centerId===c.id),pick:()=>set({centerId:c.id})})),
+      dates,timeTitle:k==='home'?'Arrival window':k==='pickup'?'Pickup time':'Drop-off time',
+      times:TIMES.map(t=>{const on=s.time===t;return{label:fmtT(t),bg:on?'#0EA5E9':'#fff',color:on?'#fff':'#0F172A',border:on?'#0EA5E9':'#E2E8F0',pick:()=>set({time:t})};}),
+      vehicles:VEH.map(v=>({name:v,bg:s.vehicle===v?'#fff':'transparent',color:s.vehicle===v?'#0F172A':'#64748B',pick:()=>set({vehicle:v})})),
+      plate:s.plate,onPlate:e=>set({plate:e.target.value}),name:s.name,onName:e=>set({name:e.target.value}),phone:s.phone,onPhone:e=>set({phone:e.target.value}),
+      summary:[
+        {icon:'icon-sparkles',label:'Service',value:pkg.name+' · '+pkg.dur},
+        {icon:k==='home'?'icon-house':k==='pickup'?'icon-truck':'icon-car-front',label:'Type',value:MODE[k]||''},
+        {icon:'icon-map-pin',label:k==='self'?'Center':k==='pickup'?'Pickup & return address':'Address',value:k==='self'?(center?center.name+', '+center.addr:''):s.address},
+        {icon:'icon-calendar',label:'When',value:whenLabel},
+        {icon:'icon-car',label:'Vehicle',value:s.vehicle+(s.plate?' · '+s.plate.toUpperCase():'')},
+        {icon:'icon-user',label:'Contact',value:s.name+' · '+s.phone}],
+      feeLabel:k==='home'?'Home service fee':k==='pickup'?'Pickup & return':'Center drop-off',fee,total,
+      next,ctaOpacity:canNext?1:.4,ctaLabel:sc==='review'?'Confirm booking':'Continue',
+      code:s.code,modeLabel:MODE[k]||'',whenLabel,
+      copyLabel:s.copied?'Copied':'Copy code',
+      copyCode:()=>{try{navigator.clipboard.writeText(s.code)}catch(e){}set({copied:true});},
+      trackNew:()=>this.find(s.code)
+    };
+  }
+}
+</script>
+</body>
+</html>

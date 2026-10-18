@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-0b13fbf5-2171-4f83-98b5-7c2cadfe7067/styles.css">
+<script src="_ds/modernist-0b13fbf5-2171-4f83-98b5-7c2cadfe7067/_ds_bundle.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/lucide-static@0.460.0/font/lucide.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&amp;display=swap">
+<style>body{margin:0;background:#F5F8FB;font-family:'Archivo',sans-serif;color:#0F172A}*{box-sizing:border-box}input,button,select{font-family:inherit}input:focus{outline:none}:focus-visible{outline:2px solid #0EA5E9;outline-offset:2px}a{color:#0369A1}a:hover{color:#0EA5E9}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+  <div style="height:64px;background:#fff;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px">
+    <div style="display:flex;align-items:center;gap:10px"><div style="width:34px;height:34px;border-radius:10px;background:#0EA5E9;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px"><i class="icon-droplets"></i></div><span style="font-weight:800;font-size:18px">Skywash</span><span style="color:#94A3B8;font-size:15px">Operations</span></div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:#166534;background:#DCFCE7;padding:6px 12px;border-radius:20px;font-weight:600"><span style="width:8px;height:8px;border-radius:50%;background:#16A34A"></span>Live</div>
+  </div>
+
+  <div style="width:100%;max-width:1440px;margin:0 auto;padding:28px 24px;display:flex;flex-direction:column;gap:22px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px">
+      <div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:28px;font-weight:800">Bookings</h1><span style="font-size:14px;color:#64748B">New bookings from the customer app appear here automatically.</span></div>
+      <span style="font-size:14px;color:#64748B">{{ today }}</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="background:#fff;border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#64748B;display:flex;align-items:center;gap:6px"><i class="{{ s.icon }}" style="color:#0EA5E9"></i>{{ s.label }}</span><span style="font-size:28px;font-weight:800">{{ s.value }}</span></div>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start">
+      <div style="flex:1 1 640px;min-width:0;background:#fff;border-radius:18px;overflow:hidden">
+        <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #E2E8F0">
+          <div style="display:flex;gap:4px;padding:4px;background:#F1F5F9;border-radius:12px;flex-wrap:wrap">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+              <div onClick="{{ t.pick }}" style="padding:7px 12px;border-radius:9px;background:{{ t.bg }};color:{{ t.color }};font-size:13px;font-weight:600;cursor:pointer;display:flex;gap:6px;align-items:center">{{ t.label }}<span style="font-size:11px;color:#94A3B8">{{ t.count }}</span></div>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;height:38px;border:1.5px solid #E2E8F0;border-radius:10px;padding:0 12px;min-width:220px;color:#94A3B8"><i class="icon-search"></i><input value="{{ q }}" onChange="{{ onQ }}" placeholder="Code, name or plate" style="border:0;flex:1;min-width:0;font-size:14px;background:transparent;color:#0F172A"></div>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:14px;min-width:760px">
+            <thead><tr style="text-align:left;color:#64748B;font-size:12px;text-transform:uppercase;letter-spacing:.04em">
+              <th style="padding:12px 16px;font-weight:600">Code</th><th style="padding:12px 8px;font-weight:600">Customer</th><th style="padding:12px 8px;font-weight:600">Service</th><th style="padding:12px 8px;font-weight:600">Type</th><th style="padding:12px 8px;font-weight:600">Location</th><th style="padding:12px 8px;font-weight:600">When</th><th style="padding:12px 16px 12px 8px;font-weight:600">Status</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{ rows }}" as="b" hint-placeholder-count="6">
+                <tr onClick="{{ b.pick }}" style="border-top:1px solid #F1F5F9;cursor:pointer;background:{{ b.rowBg }}">
+                  <td style="padding:14px 16px;font-weight:700;letter-spacing:.04em;white-space:nowrap">{{ b.code }}</td>
+                  <td style="padding:14px 8px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:600">{{ b.name }}</span><span style="font-size:12px;color:#64748B">{{ b.vehicle }} · {{ b.plate }}</span></div></td>
+                  <td style="padding:14px 8px">{{ b.pkgName }}</td>
+                  <td style="padding:14px 8px"><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:4px 9px;border-radius:8px;background:#F0F9FF;color:#0369A1;white-space:nowrap"><i class="{{ b.typeIcon }}"></i>{{ b.typeLabel }}</span></td>
+                  <td style="padding:14px 8px;color:#475569;max-width:220px">{{ b.where }}</td>
+                  <td style="padding:14px 8px;white-space:nowrap">{{ b.when }}</td>
+                  <td style="padding:14px 16px 14px 8px"><span style="font-size:12px;font-weight:600;padding:4px 9px;border-radius:20px;background:{{ b.sBg }};color:{{ b.sColor }};white-space:nowrap">{{ b.sLabel }}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+          <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}"><div style="padding:40px 16px;color:#64748B;font-size:14px">No bookings match this filter.</div></sc-if>
+        </div>
+      </div>
+
+      <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:0 1 380px;min-width:300px;background:#fff;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:18px;position:sticky;top:20px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;color:#64748B">Booking</span><span style="font-weight:800;font-size:26px;letter-spacing:.06em">{{ d.code }}</span></div>
+            <span style="font-size:12px;font-weight:600;padding:5px 10px;border-radius:20px;background:{{ d.sBg }};color:{{ d.sColor }}">{{ d.sLabel }}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:#F0F9FF;color:#0369A1;font-weight:600;font-size:14px"><i class="{{ d.typeIcon }}" style="font-size:18px"></i>{{ d.typeLong }}</div>
+          <div style="display:flex;flex-direction:column;gap:14px;font-size:14px">
+            <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;color:#64748B">{{ d.whereLabel }}</span><span style="font-weight:600;line-height:1.4">{{ d.where }}</span>
+              <sc-if value="{{ d.hasMap }}" hint-placeholder-val="{{ false }}"><a href="{{ d.mapUrl }}" target="_blank" style="font-size:13px;font-weight:600;display:flex;align-items:center;gap:5px">Open in Maps <i class="icon-arrow-up-right"></i></a></sc-if>
+            </div>
+            <sc-if value="{{ d.hasNotes }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;color:#64748B">Directions</span><span style="line-height:1.4">{{ d.notes }}</span></div></sc-if>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;color:#64748B">When</span><span style="font-weight:600">{{ d.when }}</span></div>
+              <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;color:#64748B">Service</span><span style="font-weight:600">{{ d.pkgName }}</span></div>
+              <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;color:#64748B">Vehicle</span><span style="font-weight:600">{{ d.vehicle }} · {{ d.plate }}</span></div>
+              <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;color:#64748B">Total</span><span style="font-weight:700;color:#0369A1">${{ d.total }}</span></div>
+            </div>
+            <div style="height:1px;background:#E2E8F0"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:600">{{ d.name }}</span><span style="color:#64748B">{{ d.phone }}</span></div><a href="{{ d.tel }}" style="width:40px;height:40px;border-radius:50%;background:#F0F9FF;display:flex;align-items:center;justify-content:center;font-size:17px"><i class="icon-phone"></i></a></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-if value="{{ d.hasNext }}" hint-placeholder-val="{{ true }}"><button onClick="{{ advance }}" style="height:48px;border:0;border-radius:14px;background:#0EA5E9;color:#fff;font-weight:700;font-size:15px;cursor:pointer;text-align:left;padding:0 16px;display:flex;align-items:center;justify-content:space-between">{{ d.nextLabel }}<i class="icon-arrow-right"></i></button></sc-if>
+            <sc-if value="{{ d.canCancel }}" hint-placeholder-val="{{ true }}"><button onClick="{{ cancel }}" style="height:44px;border:1.5px solid #E2E8F0;border-radius:14px;background:#fff;color:#991B1B;font-weight:600;font-size:14px;cursor:pointer;text-align:left;padding:0 16px">Cancel booking</button></sc-if>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const iso=n=>{const x=new Date();x.setDate(x.getDate()+n);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');};
+const fmtT=t=>{if(!t)return '';let [h,m]=t.split(':').map(Number);const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+String(m).padStart(2,'0')+' '+ap;};
+const fmtD=s=>{if(s===iso(0))return 'Today';if(s===iso(1))return 'Tomorrow';if(s===iso(-1))return 'Yesterday';const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString('en-US',{month:'short',day:'numeric'});};
+const SEED=()=>[
+{code:'SW-4FQ2',pkgName:'Full Detail',mode:'home',address:'2241 Felspar St, San Diego, CA',notes:'Gate code 4412. Park in driveway.',center:'',date:iso(0),time:'09:30',vehicle:'SUV',plate:'8KXR214',name:'Maya Chen',phone:'(619) 555-0142',total:99,status:'confirmed'},
+{code:'SW-H7MP',pkgName:'Exterior Wash',mode:'pickup',address:'780 Front St, Apt 12, San Diego',notes:'Keys with the concierge',center:'Skywash Mission Bay',date:iso(0),time:'11:00',vehicle:'Sedan',plate:'7ABC902',name:'Daniel Ortiz',phone:'(619) 555-0178',total:40,status:'new'},
+{code:'SW-2RTN',pkgName:'Interior Clean',mode:'self',address:'',notes:'',center:'Skywash North Park',date:iso(0),time:'12:30',vehicle:'Hatchback',plate:'6LMN331',name:'Priya Patel',phone:'(858) 555-0190',total:35,status:'in_progress'},
+{code:'SW-9KDW',pkgName:'Engine Bay',mode:'home',address:'4120 Park Blvd, San Diego',notes:'',center:'',date:iso(1),time:'08:00',vehicle:'Truck',plate:'9TRK118',name:'Sam Brooks',phone:'(619) 555-0111',total:55,status:'new'},
+{code:'SW-C3VX',pkgName:'Full Detail',mode:'pickup',address:'1550 Hotel Circle N, San Diego',notes:'Call on arrival',center:'Skywash Mission Bay',date:iso(1),time:'14:00',vehicle:'Sedan',plate:'8QWE557',name:'Lena Fischer',phone:'(858) 555-0164',total:104,status:'new'},
+{code:'SW-7BYA',pkgName:'Exterior Wash',mode:'self',address:'',notes:'',center:'Skywash Chula Vista',date:iso(-1),time:'15:30',vehicle:'SUV',plate:'5JKL440',name:'Marcus Reid',phone:'(619) 555-0133',total:25,status:'completed'}];
+const ST={new:['New','#E0F2FE','#0369A1'],confirmed:['Confirmed','#E2E8F0','#334155'],in_progress:['In progress','#FEF3C7','#92400E'],completed:['Completed','#DCFCE7','#166534'],cancelled:['Cancelled','#FEE2E2','#991B1B']};
+const TYPE={home:['Home','icon-house','Home service · team travels to customer'],pickup:['Pickup','icon-truck','Center service · we pick up and return'],self:['Drive-in','icon-car-front','Center service · customer drives in']};
+const FLOW=['new','confirmed','in_progress','completed'];
+const read=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
+
+class Component extends DCLogic {
+  state={tab:'all',q:'',sel:null};
+  componentDidMount(){this.iv=setInterval(()=>this.forceUpdate(),2000);this.on=()=>this.forceUpdate();window.addEventListener('storage',this.on);}
+  componentWillUnmount(){clearInterval(this.iv);window.removeEventListener('storage',this.on);}
+  setStatus(code,st){const m=read('skywash.status')||{};m[code]=st;localStorage.setItem('skywash.status',JSON.stringify(m));this.forceUpdate();}
+  renderVals(){
+    const s=this.state,stMap=read('skywash.status')||{};
+    const all=[...(read('skywash.bookings')||[]),...SEED()].map(b=>({...b,status:stMap[b.code]||b.status}));
+    all.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)||(a.date+a.time).localeCompare(b.date+b.time));
+    const q=s.q.trim().toLowerCase();
+    const list=all.filter(b=>(s.tab==='all'||b.mode===s.tab)&&(!q||[b.code,b.name,b.plate].join(' ').toLowerCase().includes(q)));
+    const selB=all.find(b=>b.code===s.sel)||list[0];
+    const dec=b=>{const [sl,sb,sc]=ST[b.status]||ST.new;const [tl,ti,tlong]=TYPE[b.mode]||TYPE.home;return{...b,sLabel:sl,sBg:sb,sColor:sc,typeLabel:tl,typeIcon:ti,typeLong:tlong,
+      where:b.mode==='self'?b.center:b.address,when:fmtD(b.date)+' · '+fmtT(b.time)};};
+    const rows=list.map(b=>({...dec(b),rowBg:selB&&b.code===selB.code?'#F0F9FF':'#fff',pick:()=>this.setState({sel:b.code})}));
+    let d={};
+    if(selB){const x=dec(selB),i=FLOW.indexOf(selB.status);
+      const nextLabels={new:'Confirm booking',confirmed:selB.mode==='pickup'?'Car picked up · start wash':selB.mode==='home'?'Team on site · start wash':'Car arrived · start wash',in_progress:selB.mode==='pickup'?'Car returned · complete':'Mark completed'};
+      d={...x,whereLabel:selB.mode==='self'?'Drive-in center':selB.mode==='pickup'?'Pickup & return address':'Service address',
+        hasMap:selB.mode!=='self'&&!!selB.address,mapUrl:'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(selB.address||''),
+        hasNotes:!!selB.notes,tel:'tel:'+(selB.phone||'').replace(/[^0-9+]/g,''),plate:selB.plate||'—',
+        hasNext:i>=0&&i<3,nextLabel:nextLabels[selB.status]||'',canCancel:selB.status!=='completed'&&selB.status!=='cancelled'};}
+    const cnt=m=>all.filter(b=>m==='all'||b.mode===m).length;
+    return {
+      today:new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}),
+      stats:[{icon:'icon-inbox',label:'New',value:all.filter(b=>b.status==='new').length},{icon:'icon-calendar',label:'Scheduled today',value:all.filter(b=>b.date===iso(0)&&b.status!=='cancelled').length},{icon:'icon-loader',label:'In progress',value:all.filter(b=>b.status==='in_progress').length},{icon:'icon-circle-check',label:'Completed',value:all.filter(b=>b.status==='completed').length}],
+      tabs:[['all','All'],['home','Home service'],['pickup','Pickup'],['self','Drive-in']].map(([k,l])=>({label:l,count:cnt(k),bg:s.tab===k?'#fff':'transparent',color:s.tab===k?'#0F172A':'#64748B',pick:()=>this.setState({tab:k})})),
+      q:s.q,onQ:e=>this.setState({q:e.target.value}),
+      rows,empty:rows.length===0,hasSel:!!selB,d,
+      advance:()=>{if(selB){const i=FLOW.indexOf(selB.status);if(i>=0&&i<3)this.setStatus(selB.code,FLOW[i+1]);}},
+      cancel:()=>selB&&this.setStatus(selB.code,'cancelled')
+    };
+  }
+}
+</script>
+</body>
+</html>

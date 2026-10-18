@@ -1,0 +1,72 @@
+// Skywash database schema — shared by the admin dashboard and the mobile app
+// (the mobile app only reaches it through the admin-web API routes).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Packages from the design handoff (PKGS in "Skywash App.dc.html").
+enum WashType {
+  EXTERIOR // Exterior Wash  · $25
+  INTERIOR // Interior Clean · $35
+  FULL_DETAIL // Full Detail    · $89
+  ENGINE_BAY // Engine Bay     · $45
+}
+
+enum BookingStatus {
+  PENDING // just received from the app ("new" in the design)
+  APPROVED // confirmed by staff
+  IN_PROGRESS // team on site / car picked up / car arrived — washing
+  COMPLETED
+  CANCELLED
+}
+
+/// Where the wash happens.
+enum ServiceMode {
+  HOME // team comes to the customer (+$10)
+  PICKUP // we collect the car and bring it back (+$15)
+  DRIVE_IN // customer drives to a center ($0)
+}
+
+enum VehicleType {
+  SEDAN
+  SUV
+  HATCHBACK
+  TRUCK
+}
+
+model Booking {
+  id           String        @id @default(cuid())
+  /// Public lookup code shown to the customer, e.g. "SW-4FQ2". Generated server-side.
+  code         String        @unique
+  customerName String
+  phone        String
+  carModel     String?
+  vehicleType  VehicleType
+  licensePlate String
+  washType     WashType
+  serviceMode  ServiceMode
+  /// Required for HOME and PICKUP.
+  address      String?
+  latitude     Float?
+  longitude    Float?
+  /// Directions for the team (gate code, parking spot, …).
+  notes        String?
+  /// Required for DRIVE_IN. Center ids are defined in lib/catalog.ts.
+  centerId     String?
+  /// Appointment start (date + time slot).
+  bookingDate  DateTime
+  /// Package price + service fee, in whole US dollars. Computed server-side.
+  totalPrice   Int
+  status       BookingStatus @default(PENDING)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([status, bookingDate])
+  @@index([createdAt])
+}
