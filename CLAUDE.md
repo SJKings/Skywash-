@@ -51,6 +51,7 @@ npm workspaces; run everything from the repo root.
 | Apply migrations (prod / fresh DB) | `npm run db:deploy` — Vercel also runs this on every deploy via the `vercel-build` script |
 | Seed demo bookings (incl. `SW-4FQ2`) | `npm run db:seed` |
 | Prisma Studio | `npm run db:studio` |
+| Add a dependency to admin-web or website | `npm install <pkg> -w admin-web` / `-w website` from the repo root, so it lands in **that app's** `package.json` and the lockfile. npm hoists packages to the root `node_modules`, so an undeclared import can still work locally and then fail on Vercel (which builds each app from its own folder): every import must be declared by the app that uses it |
 | Add a mobile dependency | `cd apps/mobile-app && npx expo install <pkg>` (never plain `npm i`; in cloud sessions prefix `EXPO_OFFLINE=1`, Expo's servers are blocked) |
 | Mobile web build (for browser testing) | `cd apps/mobile-app && EXPO_PUBLIC_API_URL=http://localhost:3000 npx expo export -p web` → `dist/` |
 
