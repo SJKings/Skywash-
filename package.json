@@ -7,7 +7,9 @@
   "scripts": {
     "dev:admin": "npm run dev -w admin-web",
     "dev:mobile": "npm run start -w mobile-app",
+    "dev:website": "npm run dev -w website",
     "build:admin": "npm run build -w admin-web",
+    "build:website": "npm run build -w website",
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "db:generate": "npm run db:generate -w admin-web",

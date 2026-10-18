@@ -6,6 +6,7 @@ Car wash booking service: customers book a wash from a mobile app (no sign-up, t
 |---|---|---|
 | Customer mobile app | React Native, Expo SDK 58, TypeScript | [`apps/mobile-app`](apps/mobile-app) |
 | Admin dashboard + API | Next.js 16 (App Router), Prisma 7, Prisma Postgres | [`apps/admin-web`](apps/admin-web) |
+| Public website + privacy policy | Next.js 16 | [`apps/website`](apps/website) |
 
 ## Getting started
 

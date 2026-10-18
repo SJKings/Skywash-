@@ -1,6 +1,6 @@
 # Skywash — project memory
 
-Car wash booking service. Customers book from a mobile app with **no account**; each booking gets a code (`SW-XXXX`) that is the only way to look it up. Staff manage bookings in an admin web dashboard. Both apps share one Postgres database, reached **only** through the admin-web API.
+Car wash booking service in Lagos, Nigeria. Customers book from a mobile app with **no account**; each booking gets a code (`SW-XXXX`) that is the only way to look it up. Staff manage bookings in an admin web dashboard. Both apps share one Postgres database, reached **only** through the admin-web API.
 
 ## Layout
 
@@ -14,12 +14,19 @@ skywash-/
 │   │   ├── prisma/         schema.prisma, migrations/, seed.ts
 │   │   ├── proxy.ts        Login redirect for pages + CORS for /api/* (Next 16 renamed middleware.ts → proxy.ts)
 │   │   └── design/         Ops dashboard prototype + design handoff (reference only)
+│   ├── website/            Public marketing site (Next.js 16): landing page, booking tracker, /privacy
+│   │   ├── app/            / (landing), /privacy (the privacy policy's home)
+│   │   ├── components/     header, footer, prices (mode tabs), track-booking, faq
+│   │   ├── lib/site.ts     Display copy of prices/fees/centers + FAQ, contact email, store/staff links
+│   │   ├── public/screens/ Real app screenshots, transparent phone renders (from the store-listing images)
+│   │   └── design/         Landing page prototype (reference only)
 │   └── mobile-app/         Expo SDK 58 / React Native (TypeScript), Expo Router
 │       ├── src/app/        Routes: (tabs)/index (Home), (tabs)/my-booking, service/[id],
 │       │                   book/{type,location,schedule,review}, confirmed
 │       ├── src/components/ Text (Archivo weights), ui (buttons, inputs, pills…), FlowScreen
 │       ├── src/lib/        api.ts (API client), catalog, booking-flow (step state), time, recent-codes
 │       ├── src/theme.ts    Colors and fonts from the handoff
+│       ├── store-listing/  Google Play images: 4 phone screenshots (real app), feature graphic, 512 icon
 │       └── design/         Customer app prototype + design handoff (reference only)
 ├── CLAUDE.md
 └── README.md
@@ -34,6 +41,8 @@ npm workspaces; run everything from the repo root.
 | Install all | `npm install` (also runs `prisma generate` for admin-web) |
 | Admin web dev server (:3000) | `npm run dev:admin` |
 | Mobile dev server (Expo) | `npm run dev:mobile` |
+| Website dev server | `npm run dev:website` (port 3000 too: run one at a time, or pass `-- -p 3001`) |
+| Build website | `npm run build:website` |
 | Build admin web | `npm run build:admin` |
 | Lint (both apps) | `npm run lint` |
 | Typecheck both apps | `npm run typecheck` |
@@ -45,7 +54,7 @@ npm workspaces; run everything from the repo root.
 | Add a mobile dependency | `cd apps/mobile-app && npx expo install <pkg>` (never plain `npm i`; in cloud sessions prefix `EXPO_OFFLINE=1`, Expo's servers are blocked) |
 | Mobile web build (for browser testing) | `cd apps/mobile-app && EXPO_PUBLIC_API_URL=http://localhost:3000 npx expo export -p web` → `dist/` |
 
-Before finishing a change: `npm run lint && npm run typecheck && npm run build:admin`.
+Before finishing a change: `npm run lint && npm run typecheck && npm run build:admin && npm run build:website`.
 
 ## Environment variables
 
@@ -119,7 +128,8 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - Dashboard styling: Tailwind v4 classes; `app/globals.css` pins the `sky`/`slate`/`green`/`red` steps the design uses to the handoff's exact hex values. Status pill colors and labels live in `STATUS_STYLES` (`lib/format.ts`).
 - The dashboard polls `GET /api/bookings?status=all` every 5 s while the tab is visible (stand-in until realtime). It only sees the 200 newest bookings, so stats and counts cover those.
 - `apps/mobile-app/src/lib/api.ts` mirrors the Prisma enums by hand — update it whenever the schema changes.
-- Mobile catalog (`src/lib/catalog.ts`: packages, centers, fees, time slots) duplicates the server's prices for display. Change both together; the server's total is what gets saved.
+- Prices, fees and centers exist in **three** places: `apps/admin-web/lib/catalog.ts` (what the server charges), `apps/mobile-app/src/lib/catalog.ts` and `apps/website/lib/site.ts` (display). Change all three together.
+- Website: the booking tracker calls its own `/api/bookings/:code`, which `next.config.ts` rewrites to the admin API (`SKYWASH_API_URL`, default the live admin URL), so no CORS setup is needed. It shows only real data: no ratings, no "most booked" claims, no discounts. Store screenshots in `public/screens` are transparent phone renders; regenerate them (and `mobile-app/store-listing`) when the app's look changes.
 - Mobile times: `src/lib/time.ts` computes Lagos time as a fixed UTC+1 instead of using `Intl` time zones (Hermes support varies). Bookings are sent as ISO with offset, e.g. `2026-10-19T09:30:00+01:00`. Past slots for today are disabled.
 - Mobile text: always use `components/Text` with `weight` (custom fonts need a family per weight on Android). Archivo loads in `src/app/_layout.tsx` behind the splash screen.
 - In cloud sessions docs.expo.dev is blocked: read the type definitions in `node_modules` instead. `expo-router` lives in `apps/mobile-app/node_modules`.
@@ -157,5 +167,7 @@ Admin auth = `skywash_admin` cookie (dashboard) **or** `Authorization: Bearer <A
 - [x] Lagos localisation (owner asked us to make up realistic values): centers Skywash Lekki (`lekki`, Lekki Phase 1), Skywash Ikeja (`ikeja`, Ikeja GRA), Skywash Victoria Island (`victoria-island`), area names only, no street addresses, all open 8am–7pm; time slots 08:00–15:30 (last start leaves room for a 2.5 hr Full Detail before closing); prices in whole Naira: Exterior ₦5,000, Interior ₦7,000, Engine Bay ₦10,000, Full Detail ₦25,000, home fee ₦3,000, pickup fee ₦5,000. Distances removed. Format money with `formatNaira` (both catalogs). Payment: cash, card or bank transfer on completion
 - [x] Release build for Google Play: `.aab` 1.0.0 (versionCode 4, Lagos/Naira/privacy link), 2026-10-18 — GitHub Release `android-v1.0.0-4`, Expo build `ac212cfd-11bd-4481-aaf6-4583f74ccfc2`. Live booking test passes with Naira pricing (`SW-XTMJ`, cancelled). versionCode 3 was an abandoned build; codes 2 and 3 must not be uploaded
 - [ ] Owner uploads the `.aab` in Play Console: privacy URL https://skywash-admin-web.vercel.app/privacy, App access note with reviewer code `SW-G72C`
-- [ ] Mobile: bell and filter buttons on Home are decorative; test on real devices
+- [x] Website `apps/website` built from `Skywash Landing.dc.html` with real prices/centers/screens; privacy policy page copied there
+- [ ] Deploy the website (owner's Vercel account: import the repo, root directory `apps/website`), then point the privacy policy at it: admin `/privacy` redirects there, app `PRIVACY_POLICY_URL` uses it (next app build), Play Console field updated
+- [ ] Mobile: bell and filter buttons on Home are decorative; the package ratings/review counts (4.8 · 412 etc.) come from the design and aren't real; test on real devices
 - [ ] Realtime updates (dashboard + "My booking"), rate limiting on public endpoints
