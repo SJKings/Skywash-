@@ -46,6 +46,7 @@ jobs:
           STATUS: ${{ inputs.status }}
           REPLACE_CODE: ${{ inputs.replace_code }}
         run: |
+          set -o pipefail  # a failing script must fail the step, not be hidden by tee
           node --input-type=module <<'EOF' | tee -a "$GITHUB_STEP_SUMMARY"
           const base = process.env.BASE_URL.replace(/\/$/, "");
           const auth = { "Content-Type": "application/json", Authorization: `Bearer ${process.env.ADMIN_PASSWORD}` };

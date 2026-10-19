@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 /** The public website (apps/website), home of the privacy policy. */
-const WEBSITE_URL = process.env.SKYWASH_WEBSITE_URL ?? "https://skywash-ng.vercel.app";
+const WEBSITE_URL = process.env.SKYWASH_WEBSITE_URL ?? "https://skywash.space";
 
 const nextConfig: NextConfig = {
   /* config options here */

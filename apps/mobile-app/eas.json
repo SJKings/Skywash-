@@ -11,7 +11,7 @@
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://skywash-admin-web.vercel.app",
-        "EXPO_PUBLIC_WEBSITE_URL": "https://skywash-ng.vercel.app"
+        "EXPO_PUBLIC_WEBSITE_URL": "https://skywash.space"
       }
     },
     "production": {
@@ -21,7 +21,7 @@
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://skywash-admin-web.vercel.app",
-        "EXPO_PUBLIC_WEBSITE_URL": "https://skywash-ng.vercel.app"
+        "EXPO_PUBLIC_WEBSITE_URL": "https://skywash.space"
       }
     }
   },

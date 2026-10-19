@@ -25,6 +25,7 @@ jobs:
           BASE_URL: ${{ inputs.base_url }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
         run: |
+          set -o pipefail  # a failing script must fail the step, not be hidden by tee
           node --input-type=module <<'EOF' | tee -a "$GITHUB_STEP_SUMMARY"
           const base = process.env.BASE_URL.replace(/\/$/, "");
           const password = process.env.ADMIN_PASSWORD;

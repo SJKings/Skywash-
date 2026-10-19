@@ -10,7 +10,7 @@ on:
         default: https://skywash-admin-web.vercel.app
       website_url:
         description: Deployed website URL
-        default: https://skywash-ng.vercel.app
+        default: https://skywash.space
 
 jobs:
   check:
@@ -26,6 +26,7 @@ jobs:
           BASE_URL: ${{ inputs.base_url }}
           WEBSITE_URL: ${{ inputs.website_url }}
         run: |
+          set -o pipefail  # a failing script must fail the step, not be hidden by tee
           node --input-type=module <<'EOF' | tee -a "$GITHUB_STEP_SUMMARY"
           const base = process.env.BASE_URL.replace(/\/$/, "");
           const site = process.env.WEBSITE_URL.replace(/\/$/, "");
@@ -67,6 +68,13 @@ jobs:
             vercelAuth(res, body) ??
             (res.status === 200 && body.includes("Privacy Policy") && body.includes("skywashservice@gmail.com")
               ? "✅ privacy policy served publicly" : "❌ unexpected response"));
+
+          await check("Old website link (app 1.0.0)", "https://skywash-ng.vercel.app/privacy", (res, json, body) =>
+            vercelAuth(res, body) ??
+            (site === "https://skywash-ng.vercel.app" ? "ℹ️ same as the website URL"
+              : [301, 302, 307, 308].includes(res.status) && res.headers.get("location") === `${site}/privacy`
+              ? "✅ forwards to the website's privacy policy"
+              : `❌ unexpected response (location: ${res.headers.get("location")})`));
 
           await check("Website booking tracker", `${site}/api/bookings/SW-2222`, (res, json, body) =>
             vercelAuth(res, body) ??
