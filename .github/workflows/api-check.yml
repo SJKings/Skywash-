@@ -66,7 +66,7 @@ jobs:
 
           await check("Website privacy policy", `${site}/privacy`, (res, json, body) =>
             vercelAuth(res, body) ??
-            (res.status === 200 && body.includes("Privacy Policy") && body.includes("skywashservice@gmail.com")
+            (res.status === 200 && body.includes("Privacy Policy") && body.includes("skywashspace@gmail.com")
               ? "✅ privacy policy served publicly" : "❌ unexpected response"));
 
           await check("Old website link (app 1.0.0)", "https://skywash-ng.vercel.app/privacy", (res, json, body) =>

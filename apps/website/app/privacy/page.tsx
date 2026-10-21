@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 const CONTACT = CONTACT_EMAIL;
-const EFFECTIVE = "October 18, 2026";
+const EFFECTIVE = "October 21, 2026";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (

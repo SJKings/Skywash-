@@ -5,7 +5,7 @@
 export type ServiceMode = "DRIVE_IN" | "HOME" | "PICKUP";
 export type WashType = "EXTERIOR" | "INTERIOR" | "FULL_DETAIL" | "ENGINE_BAY";
 
-export const CONTACT_EMAIL = "skywashservice@gmail.com";
+export const CONTACT_EMAIL = "skywashspace@gmail.com";
 export const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.skywash.app";
 export const STAFF_LOGIN_URL = "https://skywash-admin-web.vercel.app/login";
 
